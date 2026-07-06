@@ -36,6 +36,10 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     logoutButton = new QPushButton("Fazer Logout", this);
     mainLayout->addWidget(logoutButton);
 
+    atualizarPrecosButton = new QPushButton("Atualizar Tabela de Precos", this);
+    mainLayout->addWidget(atualizarPrecosButton);
+    connect(atualizarPrecosButton, &QPushButton::clicked, this, &AdminWindow::handleAtualizarPrecos);
+
     connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
     connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
@@ -66,4 +70,9 @@ std::string email = emailInput->text().toStdString();
 void AdminWindow::handleLogout() {
     system->logout();
     emit logoutRequested();
+}
+
+void AdminWindow::handleAtualizarPrecos() {
+    AtualizarPrecoDialog dialog(this);
+    dialog.exec();
 }
