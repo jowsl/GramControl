@@ -15,9 +15,8 @@ using json = nlohmann::json;
 // =========================================================================
 // O "BODY": A implementação real escondida de todo o resto do sistema
 // =========================================================================
-class GramControlImpl {
+class GramControlImpl : public Body {
 public:
-    // Todas aquelas variáveis que ficavam no .h agora vivem aqui
     std::vector<User> usersDB;
     int loggedUserIndex;
     std::string dbFilePath;
@@ -141,34 +140,33 @@ public:
 // O "HANDLE": Delegação de chamadas (A Ponte)
 // =========================================================================
 
-// O construtor do Handle apenas aloca o Body na memória
-GramControl::GramControl() : pImpl(new GramControlImpl()) {}
-
-// O destrutor do Handle garante que não haverá vazamento de memória
-GramControl::~GramControl() {
-    delete pImpl;
-}
+GramControl::GramControl() {}
+GramControl::~GramControl() {}
 
 // Todas as funções do Handle simplesmente repassam o trabalho para o pImpl
 bool GramControl::login(const string& email, const string& password) {
-    return pImpl->login(email, password);
+    return pImpl_->login(email, password); // Atenção ao underline aqui!
+}
+
+User* GramControl::getLoggedUser() {
+    return pImpl_->getLoggedUser();
 }
 
 void GramControl::logout() {
-    pImpl->loggedUserIndex = -1;
+    pImpl_->loggedUserIndex = -1;
 }
 
 size_t GramControl::generateHash(const string& password) {
-    return pImpl->generateHash(password);
+    return pImpl_->generateHash(password);
 }
 
 bool GramControl::registerUser(const string& email, const string& password, Profile profile) {
-    return pImpl->registerUser(email, password, profile);
+    return pImpl_->registerUser(email, password, profile);
 }
 
 void GramControl::listUsers() const {
     cout << "\n--- USUARIOS NO SISTEMA ---" << endl;
-    for (const auto& u : pImpl->usersDB) {
+    for (const auto& u : pImpl_->usersDB) {
         cout << "- " << u.email << " | Perfil: " << u.profile << endl;
     }
 }
