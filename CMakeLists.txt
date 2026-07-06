@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(GramControl VERSION 0.1 LANGUAGES CXX)
 
-# Liga o pré-processador MOC automaticamente
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -9,14 +8,14 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Busca as bibliotecas de interface gráfica do Qt
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-# Avisa o compilador onde achar o seu json.hpp
 include_directories(includes)
 
-# Lista apenas os arquivos do SEU escopo da Sprint 1
+# =========================================================================
+# ALVO 1: O Aplicativo Gráfico (Interface Qt)
+# =========================================================================
 set(PROJECT_SOURCES
     src/main.cpp
     src/GramControl.cpp
@@ -28,19 +27,19 @@ set(PROJECT_SOURCES
     src/ui/AdminWindow.h
 )
 
-# Cria o executável
 add_executable(GramControl ${PROJECT_SOURCES})
-
-# Linka com o Qt Widgets
 target_link_libraries(GramControl PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-# Passa o caminho absoluto da pasta do seu projeto direto para o código C++
 target_compile_definitions(GramControl PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(TestesUnitarios 
-    tests/unit/test_main.cpp 
+# =========================================================================
+# ALVO 2: A Bateria de Testes Unitários do Grupo (Terminal - Sem Qt)
+# =========================================================================
+set(TEST_SOURCES
+    tests/unit/main.cpp
+    tests/unit/test_login_reg.cpp
+    tests/unit/test_login_reg.h
     src/GramControl.cpp
 )
 
-# Injeta a raiz do projeto também nos testes para ele achar o data.json e a pasta logs
+add_executable(TestesUnitarios ${TEST_SOURCES})
 target_compile_definitions(TestesUnitarios PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

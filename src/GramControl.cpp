@@ -19,11 +19,11 @@ class GramControlImpl {
 public:
     // Todas aquelas variáveis que ficavam no .h agora vivem aqui
     std::vector<User> usersDB;
-    User* loggedUser;
+    int loggedUserIndex;
     std::string dbFilePath;
 
     GramControlImpl() {
-        loggedUser = nullptr;
+        loggedUserIndex = -1;
         dbFilePath = string(PROJECT_ROOT_DIR) + "/data/data.json";
         loadUsersFromFile(dbFilePath);
     }
@@ -77,46 +77,58 @@ public:
     size_t generateHash(const string& password) {
         return hash<string>{}(password);
     }
-
+    
     bool login(const string& email, const string& password) {
         size_t attemptHash = generateHash(password);
-        for (auto& user : usersDB) {
-            if (user.email == email && user.passwordHash == attemptHash) {
-                loggedUser = &user;
+        for (size_t i = 0; i < usersDB.size(); i++) {
+            if (usersDB[i].email == email && usersDB[i].passwordHash == attemptHash) {
+                loggedUserIndex = i; // Salva apenas a posição!
                 return true;
             }
         }
         return false;
     }
 
+    User* getLoggedUser() {
+        // Se alguém estiver logado, cria um ponteiro seguro e fresco na hora
+        if (loggedUserIndex >= 0 && loggedUserIndex < (int)usersDB.size()) {
+            return &usersDB[loggedUserIndex]; 
+        }
+        return nullptr;
+    }
+
     bool registerUser(const string& email, const string& password, Profile profile) {
-        if (loggedUser == nullptr || loggedUser->profile != ADMINISTRATOR) {
-        cerr << "[ERRO DE PERMISSAO] Apenas administradores podem cadastrar." << endl;
-        return false;
+        User* currentUser = getLoggedUser();
+
+        if (currentUser == nullptr || currentUser->profile != ADMINISTRATOR) {
+            cerr << "[ERRO DE PERMISSAO] Apenas administradores podem cadastrar." << endl;
+            return false;
         }
 
         for (const auto& u : usersDB) {
             if (u.email == email) {
-                cerr << "[ERRO] E-mail ja cadastrado no sistema." << endl;
+                cerr << "[ERRO] E-mail ja cadastrado." << endl;
                 return false;
             }
         }
 
+        // SALVA O NOME DO ADMIN ANTES DO VETOR SE MOVER!
+        string adminEmail = currentUser->email; 
+
         size_t hash = generateHash(password);
-        usersDB.push_back({email, hash, profile});
-        
-        // Atualiza o salvamento para usar a nossa variável com o caminho absoluto
+        usersDB.push_back({email, hash, profile}); // Aqui o vetor pode se mover
         saveUsersToFile(dbFilePath);
 
-        //salva logs
+        // LOG DE AUDITORIA
         ofstream logFile(string(PROJECT_ROOT_DIR) + "/data/logs.txt", ios::app);
         if (logFile.is_open()) {
             auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
             string timeStr = ctime(&now);
-            timeStr.pop_back(); // Remove a quebra de linha extra gerada pelo ctime
+            timeStr.pop_back();
             
-            logFile << "[" << timeStr << "] O Administrador " << loggedUser->email 
-                    << " cadastrou o novo usuario: " << email << " (Perfil: " << profile << ")" << endl;
+            // Usa a variável adminEmail que salvamos lá em cima de forma segura
+            logFile << "[" << timeStr << "] O Admin " << adminEmail 
+                    << " cadastrou: " << email << " (Perfil: " << profile << ")" << endl;
             logFile.close();
         }
 
@@ -142,12 +154,8 @@ bool GramControl::login(const string& email, const string& password) {
     return pImpl->login(email, password);
 }
 
-User* GramControl::getLoggedUser() {
-    return pImpl->loggedUser;
-}
-
 void GramControl::logout() {
-    pImpl->loggedUser = nullptr;
+    pImpl->loggedUserIndex = -1;
 }
 
 size_t GramControl::generateHash(const string& password) {

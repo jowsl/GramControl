@@ -41,7 +41,6 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
 }
 
 void AdminWindow::handleRegister() {
-<<<<<<< HEAD
 std::string email = emailInput->text().toStdString();
     std::string password = passwordInput->text().toStdString();
     
@@ -51,10 +50,6 @@ std::string email = emailInput->text().toStdString();
         return; // Interrompe a função aqui, não vai para o back-end
     }
 
-=======
-    std::string email = emailInput->text().toStdString();
-    std::string password = passwordInput->text().toStdString();
->>>>>>> 2489b5e23edd8f68067dd31196e29a7b125f51d2
     int profileValue = profileCombo->currentData().toInt();
     Profile profile = static_cast<Profile>(profileValue);
 
