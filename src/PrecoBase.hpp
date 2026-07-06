@@ -2,66 +2,94 @@
 #define PRECOBASE_HPP
 
 #include <QString>
+#include "handleBodySemDebug.h"
 
 /**
- * @class PrecoBase
- * @brief Classe de modelo (Model) que representa o preço base de gramas e insumos.
- *
- * Esta classe segue a Forma Canônica de Coplien e gerencia as validações de regra
- * de negócio para os preços base do sistema GramControl.
+ * @class PrecoBaseBody
+ * @brief Body do padrão Handle/Body. Contém os dados e a lógica de negócio
+ *        do preço base de gramas e insumos.
  */
-class PrecoBase {
-private:
-    QString nomeItem;   /**< Nome descritivo da variedade de grama ou insumo */
-    double precoAtual;  /**< Valor atual do item por metro quadrado ou unidade */
-
+class PrecoBaseBody : public Body {
 public:
     /**
-     * @brief Construtor Padrão.
+     * @brief Construtor padrão. Exigido pelo Handle<T>.
      */
-    PrecoBase();
+    PrecoBaseBody();
 
     /**
-     * @brief Construtor Parametrizado.
-     * @param nome O nome do item em formato QString.
-     * @param precoInicial O preço inicial atribuído ao item.
+     * @brief Construtor parametrizado.
+     * @param nome Nome do item.
+     * @param precoInicial Preço inicial do item.
      */
-    PrecoBase(QString nome, double precoInicial);
+    PrecoBaseBody(QString nome, double precoInicial);
 
     /**
      * @brief Destrutor virtual.
      */
-    virtual ~PrecoBase();
+    virtual ~PrecoBaseBody();
 
     /**
-     * @brief Construtor de Cópia.
-     * @param outro O objeto PrecoBase a ser copiado.
-     */
-    PrecoBase(const PrecoBase& outro);
-
-    /**
-     * @brief Operador de Atribuição.
-     * @param outro O objeto PrecoBase a ser atribuído.
-     * @return Referência para o próprio objeto atualizado.
-     */
-    PrecoBase& operator=(const PrecoBase& outro);
-
-    /**
-     * @brief Atualiza o preço base do item após validação de regra de negócio.
-     * @param novoPreco O novo valor a ser atribuído.
-     * @return true se o preço for atualizado com sucesso (não negativo), false caso contrário.
+     * @brief Valida e atualiza o preço.
+     * @param novoPreco Novo valor (deve ser >= 0).
+     * @return true se atualizado com sucesso.
      */
     bool atualizarPreco(double novoPreco);
 
     /**
-     * @brief Retorna o preço atual do item.
-     * @return double contendo o preço.
+     * @brief Retorna o preço atual.
      */
     double getPreco() const;
 
     /**
      * @brief Retorna o nome do item.
-     * @return QString contendo o nome do item.
+     */
+    QString getNome() const;
+
+private:
+    /// @brief Cópia não permitida (Body não é copiável).
+    PrecoBaseBody(const PrecoBaseBody&);
+
+    /// @brief Atribuição não permitida (Body não é copiável).
+    PrecoBaseBody& operator=(const PrecoBaseBody&);
+    QString nomeItem;
+    double  precoAtual;
+};
+
+/**
+ * @class PrecoBase
+ * @brief Handle do padrão Handle/Body. Interface pública para manipulação
+ *        do preço base de gramas e insumos no sistema GramControl.
+ *
+ * Delega todas as operações para PrecoBaseBody via pImpl_.
+ */
+class PrecoBase : public Handle<PrecoBaseBody> {
+public:
+    /**
+     * @brief Construtor padrão.
+     */
+    PrecoBase();
+
+    /**
+     * @brief Construtor parametrizado.
+     * @param nome Nome do item (ex: "Grama Esmeralda").
+     * @param precoInicial Preço inicial atribuído ao item.
+     */
+    PrecoBase(QString nome, double precoInicial);
+
+    /**
+     * @brief Atualiza o preço base após validação de regra de negócio.
+     * @param novoPreco Novo valor a ser atribuído.
+     * @return true se o preço for >= 0 e atualizado com sucesso.
+     */
+    bool atualizarPreco(double novoPreco);
+
+    /**
+     * @brief Retorna o preço atual do item.
+     */
+    double getPreco() const;
+
+    /**
+     * @brief Retorna o nome do item.
      */
     QString getNome() const;
 };

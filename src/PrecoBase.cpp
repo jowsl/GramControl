@@ -1,36 +1,50 @@
 #include "PrecoBase.hpp"
 
-PrecoBase::PrecoBase() : nomeItem(""), precoAtual(0.0) {}
+// PrecoBaseBody
 
-PrecoBase::PrecoBase(QString nome, double precoInicial) : nomeItem(nome), precoAtual(precoInicial) {}
 
-PrecoBase::~PrecoBase() {}
+PrecoBaseBody::PrecoBaseBody()
+    : nomeItem(""), precoAtual(0.0) {}
 
-PrecoBase::PrecoBase(const PrecoBase& outro) {
-    nomeItem = outro.nomeItem;
-    precoAtual = outro.precoAtual;
-}
+PrecoBaseBody::PrecoBaseBody(QString nome, double precoInicial)
+    : nomeItem(nome), precoAtual(precoInicial) {}
 
-PrecoBase& PrecoBase::operator=(const PrecoBase& outro) {
-    if (this != &outro) {
-        nomeItem = outro.nomeItem;
-        precoAtual = outro.precoAtual;
-    }
-    return *this;
-}
+PrecoBaseBody::~PrecoBaseBody() {}
 
-bool PrecoBase::atualizarPreco(double novoPreco) {
-    if (novoPreco < 0.0) {
-        return false;
-    }
+bool PrecoBaseBody::atualizarPreco(double novoPreco) {
+    if (novoPreco < 0.0) return false;
     precoAtual = novoPreco;
     return true;
 }
 
-double PrecoBase::getPreco() const {
+double PrecoBaseBody::getPreco() const {
     return precoAtual;
 }
 
-QString PrecoBase::getNome() const {
+QString PrecoBaseBody::getNome() const {
     return nomeItem;
+}
+
+// PrecoBase (Handle)
+
+PrecoBase::PrecoBase() {}   // Handle<T>() já cria o Body padrão
+
+PrecoBase::PrecoBase(QString nome, double precoInicial) {
+    // O Handle padrão já criou um Body vazio via pImpl_.
+    // Precisamos substituí-lo por um Body com dados.
+    pImpl_->detach();
+    pImpl_ = new PrecoBaseBody(nome, precoInicial);
+    pImpl_->attach();
+}
+
+bool PrecoBase::atualizarPreco(double novoPreco) {
+    return pImpl_->atualizarPreco(novoPreco);
+}
+
+double PrecoBase::getPreco() const {
+    return pImpl_->getPreco();
+}
+
+QString PrecoBase::getNome() const {
+    return pImpl_->getNome();
 }
