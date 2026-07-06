@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include "test_login_reg.h"
 #include "../../src/GramControl.h"
 
 using namespace std;
@@ -31,9 +32,4 @@ void rodarTestesUnitarios() {
     cout << "[PASS] Teste 4: Bloqueio de cadastro por usuario sem permissao." << endl;
 
     cout << "\n=== TODOS OS TESTES PASSARAM COM SUCESSO! ===" << endl;
-}
-
-int main() {
-    rodarTestesUnitarios();
-    return 0;
 }

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
     "users": [
         {
@@ -22,24 +21,4 @@
             "profile": 3
         }
     ]
-=======
-{
-    "users": [
-        {
-            "email": "admin@grama.com",
-            "passwordHash": 3288171798096025883,
-            "profile": 0
-        },
-        {
-            "email": "vendedor@grama.com",
-            "passwordHash": 13995392728885758369,
-            "profile": 1
-        },
-        {
-            "email": "teste@grama.com",
-            "passwordHash": 6354445121779642647,
-            "profile": 3
-        }
-    ]
->>>>>>> 2489b5e23edd8f68067dd31196e29a7b125f51d2
 }
