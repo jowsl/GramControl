@@ -74,3 +74,13 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Executáveis locais
+bin/
+
+# Banco de dados SQLite local
+*.db
+
+# Arquivos gerados automaticamente pelo Qt
+moc_*.cppgramcontrol.db
+moc_*.cpp
