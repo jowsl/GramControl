@@ -3,6 +3,8 @@
 #include "GramControl.h"
 #include "ui/LoginWindow.h"
 #include "ui/AdminWindow.h"
+#include "AtualizarPrecoDialog.hpp"
+
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -11,6 +13,9 @@ int main(int argc, char *argv[]) {
 
     LoginWindow loginWin(&system);
     AdminWindow adminWin(&system);
+    
+    AtualizarPrecoDialog dialog;
+
 
     // Orchestrating screen flows with Lambda functions connected to signals
     QObject::connect(&loginWin, &LoginWindow::loginSuccessful, [&](int profile) {
@@ -33,11 +38,4 @@ int main(int argc, char *argv[]) {
     loginWin.show();
 
     return app.exec();
-#include "AtualizarPrecoDialog.hpp"
-
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-    
-    AtualizarPrecoDialog dialog;
-    return dialog.exec();
 }
