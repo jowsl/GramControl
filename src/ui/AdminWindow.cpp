@@ -41,8 +41,20 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
 }
 
 void AdminWindow::handleRegister() {
+<<<<<<< HEAD
+std::string email = emailInput->text().toStdString();
+    std::string password = passwordInput->text().toStdString();
+    
+    // Impede envio de dados vazios
+    if (email.empty() || password.empty()) {
+        QMessageBox::warning(this, "Aviso", "Por favor, preencha o e-mail e a senha do novo usuario.");
+        return; // Interrompe a função aqui, não vai para o back-end
+    }
+
+=======
     std::string email = emailInput->text().toStdString();
     std::string password = passwordInput->text().toStdString();
+>>>>>>> 2489b5e23edd8f68067dd31196e29a7b125f51d2
     int profileValue = profileCombo->currentData().toInt();
     Profile profile = static_cast<Profile>(profileValue);
 

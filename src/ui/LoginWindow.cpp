@@ -28,6 +28,12 @@ LoginWindow::LoginWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
 
     // Connect event using Qt Signals and Slots
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::handleLogin);
+<<<<<<< HEAD
+    // Conecta o Enter no campo de senha ou e-mail direto para a função de login
+    connect(emailInput, &QLineEdit::returnPressed, this, &LoginWindow::handleLogin);
+    connect(passwordInput, &QLineEdit::returnPressed, this, &LoginWindow::handleLogin);
+=======
+>>>>>>> 2489b5e23edd8f68067dd31196e29a7b125f51d2
 }
 
 void LoginWindow::handleLogin() {
