@@ -23,7 +23,6 @@
 *.dll
 *.so.*
 
-
 # Fortran module files
 *.mod
 *.smod
@@ -48,9 +47,12 @@ build-*/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 install_manifest.txt
 compile_commands.json
+
+# Qt
+/.qtcreator/
+/.qtc_clangd/
 
 # Temporary files
 *.tmp
@@ -68,5 +70,14 @@ vcpkg_installed/
 Testing/
 .cache/
 
-gramcontrol.db
+# Executaveis locais
+bin/
+
+# Banco de dados SQLite local
+*.db
+
+# Arquivos gerados automaticamente pelo Qt
+moc_*.cpp
+
+# Configuracao local do editor
 .vscode/

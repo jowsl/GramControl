@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "../../src/Cliente.hpp"
+#include "test_Cliente.hpp"
 
 void teste_cliente_valido() {
     Cliente cliente("João da Silva", "34999999999", "Rua das Flores, 222");
@@ -16,10 +17,4 @@ void teste_cliente_sem_nome_ou_telefone(){
     Cliente semTelefone("Maria de Souza", "", "Rua das Palmeiras, 123");
     assert(semTelefone.validar() == false);
     std::cout << "Teste de bloqueio de cadastro incompleto passou" << std::endl;
-}
-
-int main(){
-    teste_cliente_valido();
-    teste_cliente_sem_nome_ou_telefone();
-    return 0;
 }

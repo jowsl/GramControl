@@ -17,9 +17,3 @@ void teste_persistencia_insere_cliente(){
     assert(dao.existeTelefone(telefoneTeste) == true);
     std::cout << "Teste de persistencia (INSERT cliente) passou!" << std::endl;
 }
-
-int main(int argc, char *argv[]) {
-    QCoreApplication app(argc, argv);
-    teste_persistencia_insere_cliente();
-    return 0;
-}
