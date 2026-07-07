@@ -77,5 +77,7 @@ bin/
 # Arquivos gerados automaticamente pelo Qt
 moc_*.cpp
 
+gramcontrol.db
+
 # Configuracao local do editor
 .vscode/
