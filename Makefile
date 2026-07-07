@@ -4,6 +4,7 @@ QT = -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtC
 # O "Motor" do sistema (todos os .cpp, EXCETO os arquivos main)
 CORE_SRC = src/GramControl.cpp \
            src/AtualizarPrecoDialog.cpp \
+           src/CadastrarClienteDialog.cpp \
            src/PrecoBase.cpp \
            src/PrecoBaseController.cpp \
            src/PrecoBaseDAO.cpp \
@@ -16,6 +17,7 @@ moc:
 	moc src/ui/LoginWindow.h -o src/moc_LoginWindow.cpp
 	moc src/ui/AdminWindow.h -o src/moc_AdminWindow.cpp
 	moc src/AtualizarPrecoDialog.hpp -o src/moc_AtualizarPrecoDialog.cpp
+	moc src/CadastrarClienteDialog.hpp -o src/moc_CadastrarClienteDialog.cpp
 
 app: moc
 	# Compila o app puxando o main do src + os mocs
