@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cassert>
-#include "PrecoBase.hpp"
+#include "../../src/PrecoBase.hpp"
 
 void teste_atualizacao_preco_valido() {
     // Setup: Começa com 8.00 conforme o documento
@@ -14,9 +14,4 @@ void teste_atualizacao_preco_valido() {
     assert(gramaEsmeralda.getPreco() == 9.00);
 
     std::cout << "Teste de atualizacao de preco passou com sucesso!" << std::endl;
-}
-
-int main() {
-    teste_atualizacao_preco_valido();
-    return 0;
 }
