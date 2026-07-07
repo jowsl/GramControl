@@ -8,10 +8,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 include_directories(includes)
+include_directories(src)
 
 # =========================================================================
 # ALVO 1: O Aplicativo Gráfico (Interface Qt)
@@ -25,11 +26,28 @@ set(PROJECT_SOURCES
     src/ui/LoginWindow.h
     src/ui/AdminWindow.cpp
     src/ui/AdminWindow.h
+    src/AtualizarPrecoDialog.cpp
+    src/AtualizarPrecoDialog.hpp
+    src/PrecoBase.cpp
+    src/PrecoBase.hpp
+    src/PrecoBaseController.cpp
+    src/PrecoBaseController.hpp
+    src/PrecoBaseDAO.cpp
+    src/PrecoBaseDAO.hpp
+    src/moc_AtualizarPrecoDialog.cpp
+    src/ui/ui_AtualizarPreco.h
 )
 
 add_executable(GramControl ${PROJECT_SOURCES})
-target_link_libraries(GramControl PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_compile_definitions(GramControl PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+
+target_link_libraries(GramControl PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Sql
+)
+
+target_compile_definitions(GramControl PRIVATE
+    PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 # =========================================================================
 # ALVO 2: A Bateria de Testes Unitários do Grupo (Terminal - Sem Qt)
@@ -38,8 +56,20 @@ set(TEST_SOURCES
     tests/unit/main.cpp
     tests/unit/test_login_reg.cpp
     tests/unit/test_login_reg.h
+    tests/unit/test_persistencia.cpp
+    tests/unit/test_PrecoBase.cpp
     src/GramControl.cpp
+    src/PrecoBase.cpp
+    src/PrecoBaseController.cpp
+    src/PrecoBaseDAO.cpp
 )
 
 add_executable(TestesUnitarios ${TEST_SOURCES})
-target_compile_definitions(TestesUnitarios PRIVATE PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+
+target_link_libraries(TestesUnitarios PRIVATE
+    Qt${QT_VERSION_MAJOR}::Sql
+)
+
+target_compile_definitions(TestesUnitarios PRIVATE
+    PROJECT_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
