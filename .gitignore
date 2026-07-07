@@ -1,5 +1,3 @@
-bin/
-
 # Prerequisites
 *.d
 
@@ -24,7 +22,6 @@ bin/
 *.dylib
 *.dll
 *.so.*
-
 
 # Fortran module files
 *.mod
@@ -53,10 +50,9 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 
-#QT
+# Qt
 /.qtcreator/
 /.qtc_clangd/
-
 
 # Temporary files
 *.tmp
@@ -74,10 +70,12 @@ vcpkg_installed/
 Testing/
 .cache/
 
-# Executáveis locais
+# Executaveis locais
 bin/
 
 
 # Arquivos gerados automaticamente pelo Qt
-moc_*.cppgramcontrol.db
 moc_*.cpp
+
+# Configuracao local do editor
+.vscode/
