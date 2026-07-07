@@ -1,10 +1,20 @@
 #include "PrecoBaseDAO.hpp"
-#include <QSqlQuery>
-#include <QSqlError>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
 #include <QVariant>
 #include <QDebug>
+#include <QString>
+#include <QList>
+#include <QPair>
 
-PrecoBaseDAO::PrecoBaseDAO() {
+PrecoBaseDAO::PrecoBaseDAO() {}
+
+PrecoBaseDAO::~PrecoBaseDAO() {}
+
+bool PrecoBaseDAO::inicializarBanco() {
+    // Qt fica confinado ao .cpp — o .hpp não sabe que Qt existe
+    QSqlDatabase db;
     if (QSqlDatabase::contains("qt_sql_default_connection")) {
         db = QSqlDatabase::database("qt_sql_default_connection");
     } else {
@@ -14,14 +24,11 @@ PrecoBaseDAO::PrecoBaseDAO() {
 
     if (!db.isOpen()) {
         if (!db.open()) {
-            qDebug() << "[ERRO] Não foi possível abrir o arquivo gramcontrol.db!";
+            qDebug() << "[ERRO] Nao foi possivel abrir gramcontrol.db!";
+            return false;
         }
     }
-}
 
-PrecoBaseDAO::~PrecoBaseDAO() {}
-
-bool PrecoBaseDAO::inicializarBanco() {
     QSqlQuery query(db);
 
     if (!query.exec("CREATE TABLE IF NOT EXISTS precos_base (nome TEXT PRIMARY KEY, valor REAL)")) {
@@ -50,6 +57,8 @@ bool PrecoBaseDAO::inicializarBanco() {
 }
 
 bool PrecoBaseDAO::atualizarNoBanco(const PrecoBase& preco) {
+    QSqlDatabase db = QSqlDatabase::database("qt_sql_default_connection");
+
     if (!db.isOpen()) {
         qDebug() << "[ERRO] Banco de dados fechado!";
         return false;
@@ -58,7 +67,7 @@ bool PrecoBaseDAO::atualizarNoBanco(const PrecoBase& preco) {
     QSqlQuery query(db);
     query.prepare("UPDATE precos_base SET valor = :valor WHERE nome = :nome");
     query.bindValue(":valor", preco.getPreco());
-    query.bindValue(":nome",  preco.getNome());
+    query.bindValue(":nome",  QString::fromStdString(preco.getNome()));
 
     if (!query.exec()) {
         qDebug() << "[ERRO SQL] ->" << query.lastError().text();
@@ -68,6 +77,6 @@ bool PrecoBaseDAO::atualizarNoBanco(const PrecoBase& preco) {
     return query.numRowsAffected() > 0;
 }
 
-// Forma Canônica — cópia bloqueada no .hpp, definições vazias aqui
+// Forma Canônica — cópia bloqueada
 PrecoBaseDAO::PrecoBaseDAO(const PrecoBaseDAO&) {}
 PrecoBaseDAO& PrecoBaseDAO::operator=(const PrecoBaseDAO&) { return *this; }

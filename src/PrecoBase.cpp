@@ -1,9 +1,13 @@
 #include "PrecoBase.hpp"
 
+// ──────────────────────────────────────────────
+// PrecoBaseBody
+// ──────────────────────────────────────────────
+
 PrecoBaseBody::PrecoBaseBody()
     : nomeItem(""), precoAtual(0.0) {}
 
-PrecoBaseBody::PrecoBaseBody(QString nome, double precoInicial)
+PrecoBaseBody::PrecoBaseBody(std::string nome, double precoInicial)
     : nomeItem(nome), precoAtual(precoInicial) {}
 
 PrecoBaseBody::~PrecoBaseBody() {}
@@ -18,13 +22,17 @@ double PrecoBaseBody::getPreco() const {
     return precoAtual;
 }
 
-QString PrecoBaseBody::getNome() const {
+std::string PrecoBaseBody::getNome() const {
     return nomeItem;
 }
 
+// ──────────────────────────────────────────────
+// PrecoBase (Handle)
+// ──────────────────────────────────────────────
+
 PrecoBase::PrecoBase() {}
 
-PrecoBase::PrecoBase(QString nome, double precoInicial) {
+PrecoBase::PrecoBase(std::string nome, double precoInicial) {
     pImpl_->detach();
     pImpl_ = new PrecoBaseBody(nome, precoInicial);
     pImpl_->attach();
@@ -38,6 +46,6 @@ double PrecoBase::getPreco() const {
     return pImpl_->getPreco();
 }
 
-QString PrecoBase::getNome() const {
+std::string PrecoBase::getNome() const {
     return pImpl_->getNome();
 }
