@@ -7,13 +7,17 @@ CORE_SRC = src/GramControl.cpp \
            src/PrecoBase.cpp \
            src/PrecoBaseController.cpp \
            src/PrecoBaseDAO.cpp \
+           src/Orcamento.cpp \
+           src/OrcamentoController.cpp \
            src/ui/LoginWindow.cpp \
-           src/ui/AdminWindow.cpp
+           src/ui/AdminWindow.cpp \
+           src/ui/OrcamentoDialog.cpp
 
 moc:
 	moc src/ui/LoginWindow.h -o src/moc_LoginWindow.cpp
 	moc src/ui/AdminWindow.h -o src/moc_AdminWindow.cpp
 	moc src/AtualizarPrecoDialog.hpp -o src/moc_AtualizarPrecoDialog.cpp
+	moc src/ui/OrcamentoDialog.h -o src/moc_OrcamentoDialog.cpp
 
 app: moc
 	# Compila o app puxando o main do src + os mocs
@@ -21,7 +25,7 @@ app: moc
 
 test:
 	# Compila os testes puxando os testes + o motor (sem interface grafica)
-	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' tests/unit/*.cpp src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseDAO.cpp $(QT) -o bin/testes -lsqlite3
+	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' tests/unit/*.cpp src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp $(QT) -o bin/testes -lsqlite3
 	rm -f gramcontrol.db
 	./bin/testes
 

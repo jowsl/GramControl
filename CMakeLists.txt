@@ -15,7 +15,7 @@ include_directories(includes)
 include_directories(src)
 
 # =========================================================================
-# ALVO 1: O Aplicativo Gráfico (Interface Qt)
+# ALVO 1: O Aplicativo Grafico (Interface Qt)
 # =========================================================================
 set(PROJECT_SOURCES
     src/main.cpp
@@ -34,6 +34,12 @@ set(PROJECT_SOURCES
     src/PrecoBaseController.hpp
     src/PrecoBaseDAO.cpp
     src/PrecoBaseDAO.hpp
+    src/Orcamento.cpp
+    src/Orcamento.hpp
+    src/OrcamentoController.cpp
+    src/OrcamentoController.hpp
+    src/ui/OrcamentoDialog.cpp
+    src/ui/OrcamentoDialog.h
     src/moc_AtualizarPrecoDialog.cpp
     src/ui/ui_AtualizarPreco.h
 )
@@ -50,7 +56,7 @@ target_compile_definitions(GramControl PRIVATE
 )
 
 # =========================================================================
-# ALVO 2: A Bateria de Testes Unitários do Grupo (Terminal - Sem Qt)
+# ALVO 2: A Bateria de Testes Unitarios do Grupo (Terminal - Sem Qt)
 # =========================================================================
 set(TEST_SOURCES
     tests/unit/main.cpp
@@ -58,10 +64,13 @@ set(TEST_SOURCES
     tests/unit/test_login_reg.h
     tests/unit/test_persistencia.cpp
     tests/unit/test_PrecoBase.cpp
+    tests/unit/test_Orcamento.cpp
     src/GramControl.cpp
     src/PrecoBase.cpp
     src/PrecoBaseController.cpp
     src/PrecoBaseDAO.cpp
+    src/Orcamento.cpp
+    src/OrcamentoController.cpp
 )
 
 add_executable(TestesUnitarios ${TEST_SOURCES})
