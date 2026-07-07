@@ -77,8 +77,6 @@ Testing/
 # Executáveis locais
 bin/
 
-# Banco de dados SQLite local
-*.db
 
 # Arquivos gerados automaticamente pelo Qt
 moc_*.cppgramcontrol.db
