@@ -2,6 +2,8 @@
 #define PRECOBASEDAO_HPP
 
 #include <string>
+#include <vector>
+#include <utility>
 #include "PrecoBase.hpp"
 
 /**
@@ -24,6 +26,21 @@ public:
      * @return true se o UPDATE afetar ao menos uma linha.
      */
     bool atualizarNoBanco(const PrecoBase& preco);
+
+    /**
+     * @brief Recupera o preço unitário de um item pelo nome.
+     * @param nomeItem Nome do item cadastrado no catálogo.
+     * @param precoOut Recebe o preço atual quando o item é encontrado.
+     * @return true quando o item existe no banco.
+     */
+    bool buscarPrecoPorNome(const std::string& nomeItem, double& precoOut);
+
+    /**
+     * @brief Lista apenas as variedades de grama cadastradas no catálogo.
+     *        (Filtra pelo prefixo "Grama " no nome do item.)
+     * @return Vetor de pares <nome, preco> das gramas disponíveis.
+     */
+    std::vector<std::pair<std::string, double>> listarGramas();
 
 private:
     /// @brief Cópia não permitida.
