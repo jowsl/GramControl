@@ -1,7 +1,7 @@
 #ifndef PRECOBASE_HPP
 #define PRECOBASE_HPP
 
-#include <QString>
+#include <string>
 #include "handleBodySemDebug.h"
 
 /**
@@ -12,11 +12,11 @@
 class PrecoBaseBody : public Body {
 public:
     PrecoBaseBody();
-    PrecoBaseBody(QString nome, double precoInicial);
+    PrecoBaseBody(std::string nome, double precoInicial);
     virtual ~PrecoBaseBody();
     bool atualizarPreco(double novoPreco);
     double getPreco() const;
-    QString getNome() const;
+    std::string getNome() const;
 
 private:
     /// @brief Cópia não permitida.
@@ -24,8 +24,8 @@ private:
     /// @brief Atribuição não permitida.
     PrecoBaseBody& operator=(const PrecoBaseBody&);
 
-    QString nomeItem;   ///< Nome descritivo da variedade de grama ou insumo.
-    double  precoAtual; ///< Valor atual do item por metro quadrado ou unidade.
+    std::string nomeItem;   ///< Nome descritivo da variedade de grama ou insumo.
+    double      precoAtual; ///< Valor atual do item por metro quadrado ou unidade.
 };
 
 /**
@@ -36,10 +36,10 @@ private:
 class PrecoBase : public Handle<PrecoBaseBody> {
 public:
     PrecoBase();
-    PrecoBase(QString nome, double precoInicial);
+    PrecoBase(std::string nome, double precoInicial);
     bool atualizarPreco(double novoPreco);
     double getPreco() const;
-    QString getNome() const;
+    std::string getNome() const;
 };
 
 #endif

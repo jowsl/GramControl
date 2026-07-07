@@ -1,0 +1,1 @@
+[Mon Jul 06 10:50:11 2026] O Administrador admin@grama.com cadastrou o novo usuario: teste_1@grama.com (Perfil: 3)

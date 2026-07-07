@@ -8,9 +8,10 @@ AtualizarPrecoDialog::AtualizarPrecoDialog(QWidget *parent) : QDialog(parent) {
 
 void AtualizarPrecoDialog::salvarPreco() {
     PrecoBaseController controller;
-    QString nome = inputNomeItem->text();
+    // Converte QString → std::string aqui na View, não no backend
+    std::string nome = inputNomeItem->text().toStdString();
     double novoPreco = inputNovoPreco->value();
-    
+
     if (controller.requisitarAtualizacaoPreco(nome, novoPreco)) {
         QMessageBox::information(this, "Sucesso", "Preço salvo com sucesso!");
         accept();

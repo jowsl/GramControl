@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
-#include "PrecoBase.hpp"
-#include "PrecoBaseDAO.hpp"
+#include "../../src/PrecoBase.hpp"
+#include "../../src/PrecoBaseDAO.hpp"
 
 void teste_persistencia_update_afeta_linha() {
     PrecoBaseDAO dao;
@@ -15,9 +15,4 @@ void teste_persistencia_update_afeta_linha() {
     assert(salvou == true);
 
     std::cout << "Teste de persistencia (UPDATE afeta linha) passou!" << std::endl;
-}
-
-int main() {
-    teste_persistencia_update_afeta_linha();
-    return 0;
 }
