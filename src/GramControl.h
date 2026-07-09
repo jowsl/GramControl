@@ -8,6 +8,12 @@
 class GramControlImpl; // Forward declaration continua
 
 // O seu Handle agora HERDA do Handle do professor
+/**
+ * @brief Classe de controle do sistema GramControl.
+ *
+ * Esta classe é responsável por gerenciar as operações relacionadas aos usuários,
+ * incluindo login, logout, registro e listagem de usuários.
+ */
 class GramControl : public Handle<GramControlImpl> {
 public:
     GramControl();
