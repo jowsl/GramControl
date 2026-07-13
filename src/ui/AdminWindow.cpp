@@ -1,11 +1,12 @@
 #include "AdminWindow.h"
+#include "OrcamentoDialog.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
-    resize(400, 350);
+    resize(400, 400);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -40,24 +41,27 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(atualizarPrecosButton);
     connect(atualizarPrecosButton, &QPushButton::clicked, this, &AdminWindow::handleAtualizarPrecos);
 
+    // Req. 5.7 - Inserir Metragem e Tipo de Grama
+    gerarOrcamentoButton = new QPushButton("Gerar Orcamento (Metragem + Tipo de Grama)", this);
+    mainLayout->addWidget(gerarOrcamentoButton);
+    connect(gerarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleGerarOrcamento);
+
     connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
     connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
 
 void AdminWindow::handleRegister() {
-std::string email = emailInput->text().toStdString();
+    std::string email = emailInput->text().toStdString();
     std::string password = passwordInput->text().toStdString();
-    
-    // Impede envio de dados vazios
+
     if (email.empty() || password.empty()) {
         QMessageBox::warning(this, "Aviso", "Por favor, preencha o e-mail e a senha do novo usuario.");
-        return; // Interrompe a função aqui, não vai para o back-end
+        return;
     }
 
     int profileValue = profileCombo->currentData().toInt();
     Profile profile = static_cast<Profile>(profileValue);
 
-    // Business rule validation via backend core
     if (system->registerUser(email, password, profile)) {
         QMessageBox::information(this, "Success", "Usuario cadastrado e salvo no JSON!");
         emailInput->clear();
@@ -74,5 +78,10 @@ void AdminWindow::handleLogout() {
 
 void AdminWindow::handleAtualizarPrecos() {
     AtualizarPrecoDialog dialog(this);
+    dialog.exec();
+}
+
+void AdminWindow::handleGerarOrcamento() {
+    OrcamentoDialog dialog(this);
     dialog.exec();
 }

@@ -3,10 +3,11 @@
 #include <fstream>
 #include <iostream>
 #include <functional>
-#include "../includes/json.hpp"
+#include <chrono>
+#include <ctime>
+#include <sqlite3.h> // Incluindo o SQLite nativo do C++
 
 using namespace std;
-using json = nlohmann::json;
 
 #ifndef PROJECT_ROOT_DIR
 #define PROJECT_ROOT_DIR "."
@@ -23,54 +24,77 @@ public:
 
     GramControlImpl() {
         loggedUserIndex = -1;
-        dbFilePath = string(PROJECT_ROOT_DIR) + "/data/data.json";
-        loadUsersFromFile(dbFilePath);
+        // Apontando para o seu banco isolado na pasta data
+        dbFilePath = string(PROJECT_ROOT_DIR) + "/data/auth.db";
+        initDatabase();
+        loadUsersFromDB();
     }
 
-    // Métodos internos que não precisam ser vistos por ninguém de fora
-    void loadUsersFromFile(const std::string& filePath) {
-        ifstream file(filePath);
-        if (!file.is_open()) return;
+void initDatabase() {
+        sqlite3* db;
+        if (sqlite3_open(dbFilePath.c_str(), &db) == SQLITE_OK) {
+            // 1. Garante que a tabela existe
+            const char* sqlCreate = "CREATE TABLE IF NOT EXISTS Usuarios ("
+                                    "email TEXT PRIMARY KEY, "
+                                    "passwordHash TEXT, " 
+                                    "profile INTEGER);";
+            char* errMsg = nullptr;
+            sqlite3_exec(db, sqlCreate, nullptr, nullptr, &errMsg);
 
-        try {
-            json j;
-            file >> j; 
-            for (const auto& item : j["users"]) {
-                string email = item["email"];
-                size_t hash;
-                
-                // Verifica se o JSON tem a senha em texto (como na 1ª vez) ou já tem o hash salvo
-                if (item.contains("password")) {
-                    string plainPassword = item["password"];
-                    hash = generateHash(plainPassword);
-                } else {
-                    hash = item["passwordHash"];
+            // 2. Insere o Admin padrão automaticamente se ele não existir
+            // O "INSERT OR IGNORE" impede que o SQLite dê erro por e-mail duplicado nas próximas execuções
+            size_t adminHash = generateHash("admin123");
+            string sqlAdmin = "INSERT OR IGNORE INTO Usuarios (email, passwordHash, profile) VALUES ("
+                              "'admin@grama.com', '" + to_string(adminHash) + "', 0);"; // 0 = ADMINISTRADOR
+
+            sqlite3_exec(db, sqlAdmin.c_str(), nullptr, nullptr, &errMsg);
+            
+            if (errMsg) sqlite3_free(errMsg);
+            sqlite3_close(db);
+        } else {
+            cerr << "[ERRO DB] Falha ao criar/abrir banco: " << sqlite3_errmsg(db) << endl;
+        }
+    }
+
+    void loadUsersFromDB() {
+        usersDB.clear();
+        sqlite3* db;
+        if (sqlite3_open(dbFilePath.c_str(), &db) == SQLITE_OK) {
+            const char* sql = "SELECT email, passwordHash, profile FROM Usuarios;";
+            sqlite3_stmt* stmt;
+            
+            if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+                while (sqlite3_step(stmt) == SQLITE_ROW) {
+                    string email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+                    string hashStr = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+                    size_t hash = stoull(hashStr); 
+                    int profileInt = sqlite3_column_int(stmt, 2);
+                    
+                    usersDB.push_back({email, hash, static_cast<Profile>(profileInt)});
                 }
-                
-                int profileInt = item["profile"];
-                usersDB.push_back({email, hash, static_cast<Profile>(profileInt)});
             }
-        } catch (json::parse_error& e) {
-            cerr << "[ERROR] JSON: " << e.what() << endl;
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
         }
-        file.close();
     }
 
-    void saveUsersToFile(const std::string& filePath) {
-        json j;
-        for (const auto& u : usersDB) {
-            j["users"].push_back({
-                {"email", u.email},
-                {"passwordHash", u.passwordHash}, // Agora salva o hash numérico verdadeiro!
-                {"profile", static_cast<int>(u.profile)}
-            });
+    bool insertUserDB(const string& email, size_t hash, Profile profile) {
+        sqlite3* db;
+        bool success = false;
+        if (sqlite3_open(dbFilePath.c_str(), &db) == SQLITE_OK) {
+            string sql = "INSERT INTO Usuarios (email, passwordHash, profile) VALUES ('" +
+                         email + "', '" + to_string(hash) + "', " + to_string(static_cast<int>(profile)) + ");";
+            
+            char* errMsg = nullptr;
+            if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) == SQLITE_OK) {
+                success = true;
+            } else {
+                cerr << "[ERRO DB] " << errMsg << endl;
+                sqlite3_free(errMsg);
+            }
+            sqlite3_close(db);
         }
-        
-        ofstream file(filePath);
-        if (file.is_open()) {
-            file << j.dump(4);
-            file.close();
-        }
+        return success;
     }
 
     size_t generateHash(const string& password) {
@@ -89,7 +113,6 @@ public:
     }
 
     User* getLoggedUser() {
-        // Se alguém estiver logado, cria um ponteiro seguro e fresco na hora
         if (loggedUserIndex >= 0 && loggedUserIndex < (int)usersDB.size()) {
             return &usersDB[loggedUserIndex]; 
         }
@@ -111,29 +134,32 @@ public:
             }
         }
 
-        // SALVA O NOME DO ADMIN ANTES DO VETOR SE MOVER!
         string adminEmail = currentUser->email; 
-
         size_t hash = generateHash(password);
-        usersDB.push_back({email, hash, profile}); // Aqui o vetor pode se mover
-        saveUsersToFile(dbFilePath);
 
-        // LOG DE AUDITORIA
-        ofstream logFile(string(PROJECT_ROOT_DIR) + "/data/logs.txt", ios::app);
-        if (logFile.is_open()) {
-            auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
-            string timeStr = ctime(&now);
-            timeStr.pop_back();
+        if (insertUserDB(email, hash, profile)) {
+            usersDB.push_back({email, hash, profile}); 
             
-            // Usa a variável adminEmail que salvamos lá em cima de forma segura
-            logFile << "[" << timeStr << "] O Admin " << adminEmail 
-                    << " cadastrou: " << email << " (Perfil: " << profile << ")" << endl;
-            logFile.close();
+            ofstream logFile(string(PROJECT_ROOT_DIR) + "/data/logs.txt", ios::app);
+            if (logFile.is_open()) {
+                auto now = chrono::system_clock::to_time_t(chrono::system_clock::now());
+                string timeStr = ctime(&now);
+                timeStr.pop_back();
+                logFile << "[" << timeStr << "] O Admin " << adminEmail 
+                        << " cadastrou: " << email << " (Perfil: " << profile << ")" << endl;
+                logFile.close();
+            }
+            return true;
         }
-
-        return true;
+        return false;
     }
-    
+
+    void listUsers() const {
+        cout << "\n--- USUARIOS NO SISTEMA ---" << endl;
+        for (const auto& u : usersDB) {
+            cout << "- " << u.email << " | Perfil: " << u.profile << endl;
+        }
+    }
 };
 
 // =========================================================================
@@ -143,9 +169,8 @@ public:
 GramControl::GramControl() {}
 GramControl::~GramControl() {}
 
-// Todas as funções do Handle simplesmente repassam o trabalho para o pImpl
 bool GramControl::login(const string& email, const string& password) {
-    return pImpl_->login(email, password); // Atenção ao underline aqui!
+    return pImpl_->login(email, password);
 }
 
 User* GramControl::getLoggedUser() {
@@ -165,8 +190,5 @@ bool GramControl::registerUser(const string& email, const string& password, Prof
 }
 
 void GramControl::listUsers() const {
-    cout << "\n--- USUARIOS NO SISTEMA ---" << endl;
-    for (const auto& u : pImpl_->usersDB) {
-        cout << "- " << u.email << " | Perfil: " << u.profile << endl;
-    }
+    pImpl_->listUsers();
 }
