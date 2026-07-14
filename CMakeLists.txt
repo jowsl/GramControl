@@ -41,6 +41,10 @@ set(PROJECT_SOURCES
     src/OrcamentoController.hpp
     src/ui/OrcamentoDialog.cpp
     src/ui/OrcamentoDialog.h
+    src/ui/PortalAprovacaoDialog.cpp
+    src/ui/PortalAprovacaoDialog.h
+    src/moc_AtualizarPrecoDialog.cpp
+    src/ui/ui_AtualizarPreco.h
     src/Cliente.cpp
     src/Cliente.hpp
     src/ClienteDAO.cpp
