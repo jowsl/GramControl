@@ -5,6 +5,8 @@ QT = -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtC
 CORE_SRC = src/GramControl.cpp \
            src/AtualizarPrecoDialog.cpp \
            src/CadastrarClienteDialog.cpp \
+           src/CadastrarPlantioDialog.cpp \
+           src/CalendarioPlantiosDialog.cpp \
            src/PrecoBase.cpp \
            src/PrecoBaseController.cpp \
            src/PrecoBaseDAO.cpp \
@@ -13,6 +15,9 @@ CORE_SRC = src/GramControl.cpp \
            src/Cliente.cpp \
            src/ClienteController.cpp \
            src/ClienteDAO.cpp \
+           src/Plantio.cpp \
+           src/PlantioController.cpp \
+           src/PlantioDAO.cpp \
            src/ui/LoginWindow.cpp \
            src/ui/AdminWindow.cpp \
            src/ui/OrcamentoDialog.cpp \
@@ -27,11 +32,14 @@ dlls:
 	@echo "Componentes gerados com sucesso na pasta bin/!"
 
 moc:
+	uic src/ui/CadastrarPlantio.ui -o src/ui_CadastrarPlantio.h
 	moc src/ui/LoginWindow.h -o src/moc_LoginWindow.cpp
 	moc src/ui/AdminWindow.h -o src/moc_AdminWindow.cpp
 	moc src/AtualizarPrecoDialog.hpp -o src/moc_AtualizarPrecoDialog.cpp
 	moc src/ui/OrcamentoDialog.h -o src/moc_OrcamentoDialog.cpp
 	moc src/CadastrarClienteDialog.hpp -o src/moc_CadastrarClienteDialog.cpp
+	moc src/CadastrarPlantioDialog.hpp -o src/moc_CadastrarPlantioDialog.cpp
+	moc src/CalendarioPlantiosDialog.hpp -o src/moc_CalendarioPlantiosDialog.cpp
 	moc src/ui/PortalAprovacaoDialog.h -o src/moc_PortalAprovacaoDialog.cpp
 
 app: moc
@@ -40,9 +48,9 @@ app: moc
 
 test:
 	# Compila os testes puxando os testes + o motor (sem interface grafica)
-	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' $(filter-out tests/unit/main_aprovar_recusar.cpp tests/unit/seed_demo_aprovar_recusar.cpp, $(wildcard tests/unit/*.cpp)) src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseController.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp $(QT) -o bin/testes -lsqlite3
+	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' $(filter-out tests/unit/main_aprovar_recusar.cpp tests/unit/seed_demo_aprovar_recusar.cpp, $(wildcard tests/unit/*.cpp)) src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseController.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp src/Plantio.cpp src/PlantioController.cpp src/PlantioDAO.cpp $(QT) -o bin/testes -lsqlite3
 	rm -f gramcontrol.db
 	./bin/testes
 
 clean:
-	rm -f bin/gramcontrol bin/testes bin/*.so gramcontrol.db src/moc_*.cpp
+	rm -f bin/gramcontrol bin/testes bin/*.so gramcontrol.db src/moc_*.cpp src/ui_*.h

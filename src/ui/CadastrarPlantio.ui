@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CadastrarPlantioDialog</class>
+ <widget class="QDialog" name="CadastrarPlantioDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Cadastrar Plantio Confirmado</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="labelLocal">
+     <property name="text">
+      <string>Local do Plantio:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="inputLocal"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelData">
+     <property name="text">
+      <string>Data e Hora:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDateTimeEdit" name="inputDataHora"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelArea">
+     <property name="text">
+      <string>Área (m²):</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDoubleSpinBox" name="inputArea">
+     <property name="maximum">
+      <double>999999.99</double>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelGrama">
+     <property name="text">
+      <string>Tipo de Grama:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboTipoGrama"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btnSalvar">
+       <property name="text">
+        <string>Salvar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancelar">
+       <property name="text">
+        <string>Cancelar</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

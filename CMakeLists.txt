@@ -4,6 +4,7 @@ project(GramControl VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/src/ui")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -52,6 +53,17 @@ set(PROJECT_SOURCES
     src/ClienteController.hpp
     src/CadastrarClienteDialog.cpp
     src/CadastrarClienteDialog.hpp
+    src/Plantio.cpp
+    src/Plantio.hpp
+    src/PlantioDAO.cpp
+    src/PlantioDAO.hpp
+    src/PlantioController.cpp
+    src/PlantioController.hpp
+    src/CadastrarPlantioDialog.cpp
+    src/CadastrarPlantioDialog.hpp
+    src/ui/CadastrarPlantio.ui
+    src/CalendarioPlantiosDialog.cpp
+    src/CalendarioPlantiosDialog.hpp
 )
 
 add_executable(GramControl ${PROJECT_SOURCES})
@@ -59,6 +71,7 @@ add_executable(GramControl ${PROJECT_SOURCES})
 target_link_libraries(GramControl PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
+    sqlite3
 )
 
 target_compile_definitions(GramControl PRIVATE
@@ -77,6 +90,10 @@ set(TEST_SOURCES
     tests/unit/test_Orcamento.cpp
     tests/unit/test_Cliente.cpp
     tests/unit/test_persistencia_cliente.cpp
+    tests/unit/test_Plantio.cpp
+    tests/unit/test_Plantio.hpp
+    tests/unit/test_persistencia_plantio.cpp
+    tests/unit/test_persistencia_plantio.hpp
     src/GramControl.cpp
     src/PrecoBase.cpp
     src/PrecoBaseController.cpp
@@ -85,6 +102,10 @@ set(TEST_SOURCES
     src/OrcamentoController.cpp
     src/Cliente.cpp
     src/ClienteDAO.cpp
+    src/ClienteController.cpp
+    src/Plantio.cpp
+    src/PlantioDAO.cpp
+    src/PlantioController.cpp
 )
 
 add_executable(TestesUnitarios ${TEST_SOURCES})
@@ -92,6 +113,7 @@ add_executable(TestesUnitarios ${TEST_SOURCES})
 target_link_libraries(TestesUnitarios PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
+    sqlite3
 )
 
 target_compile_definitions(TestesUnitarios PRIVATE

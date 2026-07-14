@@ -3,6 +3,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include "../CadastrarPlantioDialog.hpp"
+#include "../CalendarioPlantiosDialog.hpp"
 #include "OrcamentoController.hpp"
 #include <QInputDialog>
 
@@ -48,10 +50,23 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(gerarOrcamentoButton);
     connect(gerarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleGerarOrcamento);
 
+    // Serviço de Logística e Instalação - Cadastrar Plantio Confirmado
+    cadastrarPlantioButton = new QPushButton("Cadastrar Plantio Confirmado", this);
+    mainLayout->addWidget(cadastrarPlantioButton);
+    connect(cadastrarPlantioButton, &QPushButton::clicked, this, &AdminWindow::handleCadastrarPlantio);
+
+    // Disponibilizar calendário de plantios confirmados
+    calendarioPlantiosButton = new QPushButton("Ver Calendario de Plantios Confirmados", this);
+    mainLayout->addWidget(calendarioPlantiosButton);
+    connect(calendarioPlantiosButton, &QPushButton::clicked, this, &AdminWindow::handleCalendarioPlantios);
+
     // NOVO BOTAO AQUI:
     visualizarOrcamentoButton = new QPushButton("Visualizar Orcamento por ID", this);
     mainLayout->addWidget(visualizarOrcamentoButton);
     connect(visualizarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleVisualizarOrcamento);
+
+    connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
+    connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
 
 void AdminWindow::handleRegister() {
@@ -87,6 +102,18 @@ void AdminWindow::handleAtualizarPrecos() {
 
 void AdminWindow::handleGerarOrcamento() {
     OrcamentoDialog dialog(this);
+    dialog.exec();
+}
+
+// Implementação do novo Slot de agendamento de plantio
+void AdminWindow::handleCadastrarPlantio() {
+    CadastrarPlantioDialog dialog(this);
+    dialog.exec();
+}
+
+// Implementação do calendário de plantios confirmados
+void AdminWindow::handleCalendarioPlantios() {
+    CalendarioPlantiosDialog dialog(this);
     dialog.exec();
 }
 

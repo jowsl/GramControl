@@ -18,6 +18,8 @@ private:
     QPushButton* logoutButton;
     QPushButton* atualizarPrecosButton;
     QPushButton* gerarOrcamentoButton;   // Req. 5.7 - Inserir Metragem e Tipo de Grama
+    QPushButton* cadastrarPlantioButton;
+    QPushButton* calendarioPlantiosButton; // Calendário de plantios confirmados
     QPushButton* visualizarOrcamentoButton;
 
 private slots:
@@ -25,6 +27,8 @@ private slots:
     void handleLogout();
     void handleAtualizarPrecos();
     void handleGerarOrcamento();   // Req. 5.7
+    void handleCadastrarPlantio(); 
+    void handleCalendarioPlantios(); // Disponibilizar calendário de plantios confirmados
     void handleVisualizarOrcamento();
 
 signals:
