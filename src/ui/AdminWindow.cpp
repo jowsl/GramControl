@@ -3,6 +3,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include "OrcamentoController.hpp"
+#include <QInputDialog>
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
@@ -46,8 +48,10 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(gerarOrcamentoButton);
     connect(gerarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleGerarOrcamento);
 
-    connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
-    connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
+    // NOVO BOTAO AQUI:
+    visualizarOrcamentoButton = new QPushButton("Visualizar Orcamento por ID", this);
+    mainLayout->addWidget(visualizarOrcamentoButton);
+    connect(visualizarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleVisualizarOrcamento);
 }
 
 void AdminWindow::handleRegister() {
@@ -84,4 +88,19 @@ void AdminWindow::handleAtualizarPrecos() {
 void AdminWindow::handleGerarOrcamento() {
     OrcamentoDialog dialog(this);
     dialog.exec();
+}
+
+void AdminWindow::handleVisualizarOrcamento() {
+    bool ok;
+    // Abre uma caixa de diálogo pedindo um número inteiro (ID)
+    int idBusca = QInputDialog::getInt(this, "Visualizar Orcamento", 
+                                       "Digite o ID do Orcamento:", 
+                                       1, 1, 1000000, 1, &ok);
+    
+    // Se o usuário clicou em OK e digitou um número
+    if (ok) {
+        OrcamentoController controller;
+        std::string detalhes = controller.buscarDetalhamento(idBusca);
+        QMessageBox::information(this, "Detalhes do Orcamento", QString::fromStdString(detalhes));
+    }
 }

@@ -30,3 +30,13 @@ bool OrcamentoController::calcularOrcamento(const std::string& tipoGrama,
     orcamentoOut = Orcamento(tipoGrama, metragem, precoUnitario);
     return orcamentoOut.metragemValida();
 }
+
+bool OrcamentoController::salvarOrcamentoDigital(Orcamento& orcamento, const std::string& emailCliente) {
+    // Repassa a responsabilidade para o Model (o Handle do Orcamento)
+    return orcamento.gerarOrcamentoDigital(emailCliente);
+}
+
+std::string OrcamentoController::buscarDetalhamento(int idOrcamento) {
+    // Chama o método estático para retornar a string pro Qt exibir num QMessageBox ou QLabel
+    return Orcamento::visualizarDetalhamento(idOrcamento);
+}

@@ -18,12 +18,14 @@ private:
     QPushButton* logoutButton;
     QPushButton* atualizarPrecosButton;
     QPushButton* gerarOrcamentoButton;   // Req. 5.7 - Inserir Metragem e Tipo de Grama
+    QPushButton* visualizarOrcamentoButton;
 
 private slots:
     void handleRegister();
     void handleLogout();
     void handleAtualizarPrecos();
     void handleGerarOrcamento();   // Req. 5.7
+    void handleVisualizarOrcamento();
 
 signals:
     void logoutRequested();

@@ -17,6 +17,11 @@ int main(int argc, char *argv[]) {
     teste_orcamento_calcula_valor_parcial_corretamente();
     teste_orcamento_rejeita_metragem_invalida();
     teste_orcamento_multiplos_tipos_de_grama();
+    
+    // Testes Sprint 2 - Banco de Dados
+    teste_orcamento_gerar_digital();
+    teste_orcamento_visualizar_detalhamento();
+
     teste_cliente_valido();
     teste_cliente_sem_nome_ou_telefone();
     teste_persistencia_insere_cliente();

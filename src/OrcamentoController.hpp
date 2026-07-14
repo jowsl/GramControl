@@ -38,6 +38,24 @@ public:
     bool calcularOrcamento(const std::string& tipoGrama,
                            double metragem,
                            Orcamento& orcamentoOut);
+
+    // Retorna true se salvou com sucesso
+    /**
+     * @brief Salva o orçamento digital no banco de dados, associando-o ao
+     *        e-mail do cliente.
+     */
+    bool salvarOrcamentoDigital(Orcamento& orcamento, const std::string& emailCliente);
+    
+    // Retorna os dados formatados
+    /**
+     * @brief Busca o detalhamento do orçamento no banco de dados, a partir
+     *        do ID do orçamento.
+     *
+     * @param idOrcamento ID do orçamento a ser buscado.
+     * @return String formatada com os detalhes do orçamento, ou uma mensagem
+     *         de erro caso o ID não seja encontrado.
+     */
+    std::string buscarDetalhamento(int idOrcamento);
 };
 
 #endif
