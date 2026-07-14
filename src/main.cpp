@@ -5,6 +5,18 @@
 #include "ui/AdminWindow.h"
 #include "AtualizarPrecoDialog.hpp"
 #include "CadastrarClienteDialog.hpp"
+#include "ui/PortalAprovacaoDialog.h"
+
+/**
+ * @brief Ponto de entrada da aplicação GramControl.
+ *
+ * Inicializa a interface gráfica, cria a instância principal do sistema
+ * e conecta os fluxos de login e logout entre as janelas.
+ *
+ * @param argc Número de argumentos de linha de comando.
+ * @param argv Vetor com os argumentos de linha de comando.
+ * @return Código de saída da aplicação.
+ */
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -22,6 +34,12 @@ int main(int argc, char *argv[]) {
             loginWin.hide();
             CadastrarClienteDialog* cadastroWin = new CadastrarClienteDialog();
             cadastroWin->show();
+        } else if (profile == 3) { // CUSTOMER / Cliente
+            loginWin.hide();
+            User* usuarioLogado = system.getLoggedUser();
+            QString emailLogado = usuarioLogado ? QString::fromStdString(usuarioLogado->email) : QString();
+            PortalAprovacaoDialog* portalWin = new PortalAprovacaoDialog(emailLogado);
+            portalWin->show();
         } else {
             QMessageBox::warning(&loginWin, "Aviso", "Logado com outro perfil. O escopo dessa interface pertence a outra equipe.");
             system.logout();

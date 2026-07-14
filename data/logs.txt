@@ -1,1 +1,4 @@
 [Mon Jul 06 10:50:11 2026] O Administrador admin@grama.com cadastrou o novo usuario: teste_1@grama.com (Perfil: 3)
+[Tue Jul  7 12:25:52 2026] O Admin admin@grama.com cadastrou: cliente_1783437952@grama.com (Perfil: 3)
+[Tue Jul  7 14:07:08 2026] O Admin admin@grama.com cadastrou: cliente_1783444028@grama.com (Perfil: 3)
+[Tue Jul  7 13:48:27 2026] O Admin admin@grama.com cadastrou: cliente_1783442907@grama.com (Perfil: 3)

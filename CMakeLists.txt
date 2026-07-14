@@ -34,6 +34,15 @@ set(PROJECT_SOURCES
     src/PrecoBaseController.hpp
     src/PrecoBaseDAO.cpp
     src/PrecoBaseDAO.hpp
+    src/Orcamento.cpp
+    src/Orcamento.hpp
+    src/OrcamentoController.cpp
+    src/OrcamentoController.hpp
+    src/ui/OrcamentoDialog.cpp
+    src/ui/OrcamentoDialog.h
+    src/ui/PortalAprovacaoDialog.cpp
+    src/ui/PortalAprovacaoDialog.h
+    src/moc_AtualizarPrecoDialog.cpp
     src/ui/ui_AtualizarPreco.h
     src/Cliente.cpp
     src/Cliente.hpp
@@ -65,12 +74,15 @@ set(TEST_SOURCES
     tests/unit/test_login_reg.h
     tests/unit/test_persistencia.cpp
     tests/unit/test_PrecoBase.cpp
+    tests/unit/test_Orcamento.cpp
     tests/unit/test_Cliente.cpp
     tests/unit/test_persistencia_cliente.cpp
     src/GramControl.cpp
     src/PrecoBase.cpp
     src/PrecoBaseController.cpp
     src/PrecoBaseDAO.cpp
+    src/Orcamento.cpp
+    src/OrcamentoController.cpp
     src/Cliente.cpp
     src/ClienteDAO.cpp
 )

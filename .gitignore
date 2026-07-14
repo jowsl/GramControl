@@ -73,11 +73,11 @@ Testing/
 # Executaveis locais
 bin/
 
-# Banco de dados SQLite local
-*.db
 
 # Arquivos gerados automaticamente pelo Qt
 moc_*.cpp
+
+gramcontrol.db
 
 # Configuracao local do editor
 .vscode/

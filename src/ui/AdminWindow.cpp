@@ -1,11 +1,14 @@
 #include "AdminWindow.h"
+#include "OrcamentoDialog.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include "OrcamentoController.hpp"
+#include <QInputDialog>
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
-    resize(400, 350);
+    resize(400, 400);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -40,24 +43,29 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(atualizarPrecosButton);
     connect(atualizarPrecosButton, &QPushButton::clicked, this, &AdminWindow::handleAtualizarPrecos);
 
-    connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
-    connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
+    // Req. 5.7 - Inserir Metragem e Tipo de Grama
+    gerarOrcamentoButton = new QPushButton("Gerar Orcamento (Metragem + Tipo de Grama)", this);
+    mainLayout->addWidget(gerarOrcamentoButton);
+    connect(gerarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleGerarOrcamento);
+
+    // NOVO BOTAO AQUI:
+    visualizarOrcamentoButton = new QPushButton("Visualizar Orcamento por ID", this);
+    mainLayout->addWidget(visualizarOrcamentoButton);
+    connect(visualizarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleVisualizarOrcamento);
 }
 
 void AdminWindow::handleRegister() {
-std::string email = emailInput->text().toStdString();
+    std::string email = emailInput->text().toStdString();
     std::string password = passwordInput->text().toStdString();
-    
-    // Impede envio de dados vazios
+
     if (email.empty() || password.empty()) {
         QMessageBox::warning(this, "Aviso", "Por favor, preencha o e-mail e a senha do novo usuario.");
-        return; // Interrompe a função aqui, não vai para o back-end
+        return;
     }
 
     int profileValue = profileCombo->currentData().toInt();
     Profile profile = static_cast<Profile>(profileValue);
 
-    // Business rule validation via backend core
     if (system->registerUser(email, password, profile)) {
         QMessageBox::information(this, "Success", "Usuario cadastrado e salvo no JSON!");
         emailInput->clear();
@@ -75,4 +83,24 @@ void AdminWindow::handleLogout() {
 void AdminWindow::handleAtualizarPrecos() {
     AtualizarPrecoDialog dialog(this);
     dialog.exec();
+}
+
+void AdminWindow::handleGerarOrcamento() {
+    OrcamentoDialog dialog(this);
+    dialog.exec();
+}
+
+void AdminWindow::handleVisualizarOrcamento() {
+    bool ok;
+    // Abre uma caixa de diálogo pedindo um número inteiro (ID)
+    int idBusca = QInputDialog::getInt(this, "Visualizar Orcamento", 
+                                       "Digite o ID do Orcamento:", 
+                                       1, 1, 1000000, 1, &ok);
+    
+    // Se o usuário clicou em OK e digitou um número
+    if (ok) {
+        OrcamentoController controller;
+        std::string detalhes = controller.buscarDetalhamento(idBusca);
+        QMessageBox::information(this, "Detalhes do Orcamento", QString::fromStdString(detalhes));
+    }
 }
