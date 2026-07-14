@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include "../CadastrarPlantioDialog.hpp"
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
@@ -46,6 +47,11 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(gerarOrcamentoButton);
     connect(gerarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleGerarOrcamento);
 
+    // Serviço de Logística e Instalação - Cadastrar Plantio Confirmado
+    cadastrarPlantioButton = new QPushButton("Cadastrar Plantio Confirmado", this);
+    mainLayout->addWidget(cadastrarPlantioButton);
+    connect(cadastrarPlantioButton, &QPushButton::clicked, this, &AdminWindow::handleCadastrarPlantio);
+
     connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
     connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
@@ -83,5 +89,11 @@ void AdminWindow::handleAtualizarPrecos() {
 
 void AdminWindow::handleGerarOrcamento() {
     OrcamentoDialog dialog(this);
+    dialog.exec();
+}
+
+// Implementação do novo Slot de agendamento de plantio
+void AdminWindow::handleCadastrarPlantio() {
+    CadastrarPlantioDialog dialog(this);
     dialog.exec();
 }

@@ -6,6 +6,8 @@
 #include "test_Orcamento.h"
 #include "test_Cliente.hpp"
 #include "test_persistencia_cliente.hpp"
+#include "test_Plantio.hpp"
+#include "test_persistencia_plantio.hpp"
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
@@ -35,6 +37,13 @@ int main(int argc, char *argv[]) {
     teste_cliente_valido();
     teste_cliente_sem_nome_ou_telefone();
     teste_persistencia_insere_cliente();
+
+    // ... outros testes existentes ...
+
+    std::cout << "\n--- TESTES DE LOGÍSTICA E PLANTIO ---" << std::endl;
+    teste_plantio_valido();
+    teste_plantio_dados_invalidos();
+    teste_persistencia_insere_plantio();
 
     return 0;
 }

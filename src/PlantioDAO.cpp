@@ -41,7 +41,7 @@ bool PlantioDAO::inserirNoBanco(const Plantio& plantio) {
         return false;
     }
 
-    qlonglong plantioId = query.lastInsertId();
+    qlonglong plantioId = query.lastInsertId().toLongLong();
     QMap<QString, double> insumos = plantio.getInsumos();
     for (auto it = insumos.constBegin(); it != insumos.constEnd(); ++it) {
         QSqlQuery queryInsumo(db);
