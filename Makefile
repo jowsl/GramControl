@@ -15,7 +15,8 @@ CORE_SRC = src/GramControl.cpp \
            src/ClienteDAO.cpp \
            src/ui/LoginWindow.cpp \
            src/ui/AdminWindow.cpp \
-           src/ui/OrcamentoDialog.cpp
+           src/ui/OrcamentoDialog.cpp \
+           src/ui/PortalAprovacaoDialog.cpp
 
 dlls:
 	@echo "Gerando componentes de servico (DLLs/.so)..."
@@ -31,6 +32,7 @@ moc:
 	moc src/AtualizarPrecoDialog.hpp -o src/moc_AtualizarPrecoDialog.cpp
 	moc src/ui/OrcamentoDialog.h -o src/moc_OrcamentoDialog.cpp
 	moc src/CadastrarClienteDialog.hpp -o src/moc_CadastrarClienteDialog.cpp
+	moc src/ui/PortalAprovacaoDialog.h -o src/moc_PortalAprovacaoDialog.cpp
 
 app: moc
 	# Compila o app puxando o main do src + os mocs
@@ -38,7 +40,7 @@ app: moc
 
 test:
 	# Compila os testes puxando os testes + o motor (sem interface grafica)
-	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' tests/unit/*.cpp src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseController.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp $(QT) -o bin/testes -lsqlite3
+	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' $(filter-out tests/unit/main_aprovar_recusar.cpp tests/unit/seed_demo_aprovar_recusar.cpp, $(wildcard tests/unit/*.cpp)) src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseController.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp $(QT) -o bin/testes -lsqlite3
 	rm -f gramcontrol.db
 	./bin/testes
 

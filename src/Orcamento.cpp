@@ -154,6 +154,96 @@ std::string OrcamentoBody::visualizarDetalhamento(int idBusca) {
     return detalhes;
 }
 
+// [SPRINT 2] Aprovar ou Recusar orçamento digitalmente
+
+/**
+ * @brief Carrega os campos de um orçamento persistido a partir do ID.
+ * @param idBusca ID do orçamento a ser carregado.
+ * @return true se encontrado; false caso contrário (ou erro ao abrir o banco).
+ */
+bool OrcamentoBody::carregarPorId(int idBusca) {
+    sqlite3* db;
+    if (sqlite3_open(getDbPath().c_str(), &db) != SQLITE_OK) {
+        sqlite3_close(db);
+        return false;
+    }
+
+    const char* sql = "SELECT emailCliente, metragem, tipoGrama, precoUnitario, status "
+                       "FROM Orcamentos WHERE id = ?;";
+    sqlite3_stmt* stmt = nullptr;
+    bool encontrado = false;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, idBusca);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            emailCliente  = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            metragem      = sqlite3_column_double(stmt, 1);
+            tipoGrama     = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            precoUnitario = sqlite3_column_double(stmt, 3);
+            status        = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+            id            = idBusca;
+            encontrado    = true;
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return encontrado;
+}
+
+/**
+ * @brief Aplica a transição de status no banco, validando dono e status atual.
+ *
+ * A transição só é aplicada se: (1) o orçamento já foi carregado (id > 0),
+ * (2) o e-mail informado é o mesmo do cliente dono do orçamento e
+ * (3) o status atual, no banco, ainda é "Aguardando Aprovação" — a checagem
+ * do status é feita atomicamente na cláusula WHERE do UPDATE para evitar
+ * que o mesmo orçamento seja decidido duas vezes.
+ *
+ * @param emailLogado E-mail do cliente autenticado que está decidindo.
+ * @param novoStatus  "Aprovado" ou "Recusado".
+ * @return true se a transição foi persistida com sucesso.
+ */
+bool OrcamentoBody::transicionarStatus(const std::string& emailLogado, const std::string& novoStatus) {
+    if (id <= 0) return false;
+    if (emailCliente != emailLogado) return false;
+    if (status != "Aguardando Aprovação") return false;
+
+    sqlite3* db;
+    if (sqlite3_open(getDbPath().c_str(), &db) != SQLITE_OK) {
+        sqlite3_close(db);
+        return false;
+    }
+
+    const char* sql = "UPDATE Orcamentos SET status = ? "
+                       "WHERE id = ? AND status = 'Aguardando Aprovação';";
+    sqlite3_stmt* stmt = nullptr;
+    bool sucesso = false;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, novoStatus.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_int(stmt, 2, id);
+
+        if (sqlite3_step(stmt) == SQLITE_DONE && sqlite3_changes(db) > 0) {
+            status  = novoStatus;
+            sucesso = true;
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return sucesso;
+}
+
+bool OrcamentoBody::aprovar(const std::string& emailLogado) {
+    return transicionarStatus(emailLogado, "Aprovado");
+}
+
+bool OrcamentoBody::recusar(const std::string& emailLogado) {
+    return transicionarStatus(emailLogado, "Recusado");
+}
+
 // ──────────────────────────────────────────────
 // Orcamento (Handle - Delegação)
 // ──────────────────────────────────────────────
@@ -182,4 +272,16 @@ bool Orcamento::gerarOrcamentoDigital(const std::string& email) {
 
 std::string Orcamento::visualizarDetalhamento(int idBusca) {
     return OrcamentoBody::visualizarDetalhamento(idBusca);
+}
+
+bool Orcamento::carregarPorId(int idBusca) {
+    return pImpl_->carregarPorId(idBusca);
+}
+
+bool Orcamento::aprovar(const std::string& emailLogado) {
+    return pImpl_->aprovar(emailLogado);
+}
+
+bool Orcamento::recusar(const std::string& emailLogado) {
+    return pImpl_->recusar(emailLogado);
 }
