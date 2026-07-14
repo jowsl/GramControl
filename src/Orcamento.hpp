@@ -4,6 +4,10 @@
 #include <string>
 #include "handleBodySemDebug.h"
 
+//foward declaration
+void teste_orcamento_gerar_digital();
+void teste_orcamento_visualizar_detalhamento();
+
 /**
  * @class OrcamentoBody
  * @brief Body do padrão Handle/Body. Contém os dados e a lógica de negócio
@@ -14,6 +18,10 @@
  * tipo de grama escolhido.
  */
 class OrcamentoBody : public Body {
+    //testes como friend do body
+    friend void teste_orcamento_gerar_digital();
+    friend void teste_orcamento_visualizar_detalhamento();
+
 public:
     OrcamentoBody();
     OrcamentoBody(std::string tipoGrama, double metragem, double precoUnitario);
@@ -114,6 +122,10 @@ private:
  *        orçamento parcial de instalação de grama (Requisito 5.7).
  */
 class Orcamento : public Handle<OrcamentoBody> {
+    //fiends com o handle para testes
+    friend void teste_orcamento_gerar_digital();
+    friend void teste_orcamento_visualizar_detalhamento();
+
 public:
     Orcamento();
     Orcamento(std::string tipoGrama, double metragem, double precoUnitario);

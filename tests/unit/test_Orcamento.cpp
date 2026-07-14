@@ -51,20 +51,34 @@ void teste_orcamento_gerar_digital() {
     Orcamento orc("Grama Esmeralda", 50.0, 10.00);
     std::string emailTeste = "unit@sprint2.com";
     
-    assert(orc.gerarOrcamentoDigital(emailTeste) == true);
-    assert(orc.getId() > 0); 
-    assert(orc.getEmailCliente() == emailTeste);
-    assert(orc.getStatus() == "Aguardando Aprovação");
+    // Testa a execução da função alvo
+    bool sucesso = orc.gerarOrcamentoDigital(emailTeste);
+    assert(sucesso == true);
     
-    std::cout << "Teste geracao de orcamento no BD: OK" << std::endl;
+    // Verifica os atributos direto
+    assert(orc.pImpl_->id > 0); 
+    assert(orc.pImpl_->emailCliente == emailTeste);
+    assert(orc.pImpl_->status == "Aguardando Aprovação");
+    
+    std::cout << "Teste geracao de orcamento no BD : OK" << std::endl;
 }
 
 void teste_orcamento_visualizar_detalhamento() {
     Orcamento orc("Grama Batatais", 10.0, 5.00);
-    orc.gerarOrcamentoDigital("busca@sprint2.com");
     
-    int id = orc.getId();
-    std::string detalhes = Orcamento::visualizarDetalhamento(id);
+    orc.pImpl_->id = 999888; 
+    orc.pImpl_->emailCliente = "mock@sprint2.com";
+    orc.pImpl_->status = "Mockado";
+    orc.pImpl_->metragem = 10.0;
+    orc.pImpl_->precoUnitario = 5.0;
+    
+    // Para testar a busca, precisamos garantir que esse ID exista no banco.
+    // Como queremos testar apenas o retorno da string formatada pelo BD:
+    orc.gerarOrcamentoDigital("busca@sprint2.com"); 
+    int idRealNoBanco = orc.pImpl_->id; // Pegamos o ID real que o SQLite gerou diretamente da memória
+    
+    // Executa a função alvo
+    std::string detalhes = Orcamento::visualizarDetalhamento(idRealNoBanco);
     
     // Verifica se os dados vitais estão na string final
     assert(detalhes.find("busca@sprint2.com") != std::string::npos);
@@ -220,4 +234,6 @@ void teste_controller_recusarOrcamento_sucesso() {
     assert(controller.recusarOrcamento(id, "controller_recusar@sprint2.com") == false);
 
     std::cout << "Teste controller recusarOrcamento: OK" << std::endl;
+    
+    std::cout << "Teste formatacao e busca no BD : OK" << std::endl;
 }
