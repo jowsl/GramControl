@@ -1,6 +1,7 @@
 #include "CadastrarPlantioDialog.hpp"
 #include "ui_CadastrarPlantio.h" // Ficheiro criado automaticamente pelo CMake
 #include <QMessageBox>
+#include <QSqlDatabase>
 
 CadastrarPlantioDialog::CadastrarPlantioDialog(QWidget *parent) : 
     QDialog(parent), 
@@ -21,6 +22,17 @@ CadastrarPlantioDialog::~CadastrarPlantioDialog() {
 }
 
 void CadastrarPlantioDialog::salvarPlantio() {
+    QSqlDatabase db;
+    if (QSqlDatabase::contains("qt_sql_default_connection")) {
+        db = QSqlDatabase::database("qt_sql_default_connection");
+    } else {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName("gramcontrol.db"); // Conecta no banco oficial da equipe
+    }
+    if (!db.isOpen()) {
+        db.open();
+    }
+    
     QString local = ui->inputLocal->text();
     QString dataHora = ui->inputDataHora->dateTime().toString("yyyy-MM-dd HH:mm:ss");
     double area = ui->inputArea->value();
