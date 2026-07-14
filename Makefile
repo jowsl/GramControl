@@ -40,7 +40,7 @@ app: moc
 
 test:
 	# Compila os testes puxando os testes + o motor (sem interface grafica)
-	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' $(filter-out tests/unit/main_aprovar_recusar.cpp tests/unit/seed_demo_aprovar_recusar.cpp, $(wildcard tests/unit/*.cpp)) src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp $(QT) -o bin/testes -lsqlite3
+	g++ -fPIC -std=c++17 -I src -I includes -DPROJECT_ROOT_DIR='"$(PWD)"' $(filter-out tests/unit/main_aprovar_recusar.cpp tests/unit/seed_demo_aprovar_recusar.cpp, $(wildcard tests/unit/*.cpp)) src/GramControl.cpp src/PrecoBase.cpp src/PrecoBaseController.cpp src/PrecoBaseDAO.cpp src/Orcamento.cpp src/OrcamentoController.cpp src/Cliente.cpp src/ClienteController.cpp src/ClienteDAO.cpp $(QT) -o bin/testes -lsqlite3
 	rm -f gramcontrol.db
 	./bin/testes
 
