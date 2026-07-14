@@ -23,28 +23,62 @@ public:
      * @brief Recalcula o valor total do orçamento (metragem * precoUnitario).
      * @return Valor parcial do serviço, em reais. Retorna 0.0 quando a metragem
      *         ou o preço unitário forem inválidos.
-     */
+    */
     double calcularTotal() const;
-
     /**
      * @brief Valida se a metragem informada é aceita pelo sistema.
      * @return true quando a metragem é estritamente positiva.
-     */
+    */
     bool metragemValida() const;
 
     double getMetragem() const;
     double getPrecoUnitario() const;
     std::string getTipoGrama() const;
 
+    // --- NOVAS FUNCIONALIDADES SPRINT 2 ---
+    int getId() const;
+    /**
+     * @brief Retorna o email do cliente.
+     * @return Email do cliente.
+     */
+    std::string getEmailCliente() const;
+    /**
+     * @brief Retorna o status do orçamento.
+     * @return Status do orçamento.
+     */
+    std::string getStatus() const;
+
+    // [SPRINT 2] Funcionalidade 1: Salva no banco e gera o registro
+    /**
+     * @brief Gera o orçamento digital e salva no banco de dados.
+     * @param email Email do cliente para envio do orçamento digital.
+     * @return true se o orçamento digital foi gerado e salvo com sucesso, false caso
+     */
+    bool gerarOrcamentoDigital(const std::string& email);
+
+    // [SPRINT 2] Funcionalidade 2: Busca no banco e retorna formatado
+    /**
+     * @brief Visualiza o detalhamento de um orçamento específico.
+     * @param idBusca ID do orçamento a ser visualizado.
+     * @return String contendo o detalhamento do orçamento.
+     */
+    static std::string visualizarDetalhamento(int idBusca);
+
 private:
+
     /// @brief Cópia não permitida.
     OrcamentoBody(const OrcamentoBody&);
     /// @brief Atribuição não permitida.
     OrcamentoBody& operator=(const OrcamentoBody&);
 
-    std::string tipoGrama;      ///< Nome da variedade de grama selecionada.
-    double      metragem;       ///< Metragem (m²) informada pelo vendedor.
-    double      precoUnitario;  ///< Preço por m² recuperado do catálogo.
+    std::string tipoGrama;      
+    double      metragem;       
+    double      precoUnitario;  
+
+    // Novos atributos de persistência
+    int id;
+    std::string emailCliente;
+    std::string status;
 };
 
 /**
@@ -62,6 +96,14 @@ public:
     double getMetragem() const;
     double getPrecoUnitario() const;
     std::string getTipoGrama() const;
+
+    // --- NOVAS FUNCIONALIDADES SPRINT 2 ---
+    int getId() const;
+    std::string getEmailCliente() const;
+    std::string getStatus() const;
+
+    bool gerarOrcamentoDigital(const std::string& email);
+    static std::string visualizarDetalhamento(int idBusca);
 };
 
 #endif
