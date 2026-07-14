@@ -58,6 +58,8 @@ set(PROJECT_SOURCES
     src/CadastrarPlantioDialog.cpp
     src/CadastrarPlantioDialog.hpp
     src/ui/CadastrarPlantio.ui
+    src/CalendarioPlantiosDialog.cpp
+    src/CalendarioPlantiosDialog.hpp
 )
 
 add_executable(GramControl ${PROJECT_SOURCES})
@@ -96,6 +98,7 @@ set(TEST_SOURCES
     src/OrcamentoController.cpp
     src/Cliente.cpp
     src/ClienteDAO.cpp
+    src/ClienteController.cpp
     src/Plantio.cpp
     src/PlantioDAO.cpp
     src/PlantioController.cpp

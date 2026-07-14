@@ -57,5 +57,31 @@ bool PlantioDAO::inserirNoBanco(const Plantio& plantio) {
     return db.commit();
 }
 
+QList<PlantioAgendado> PlantioDAO::listarPlantiosConfirmados() {
+    QList<PlantioAgendado> resultado;
+
+    if (!db.isOpen() && !db.open()) return resultado;
+
+    QSqlQuery query(db);
+    // Todo registro em "plantios" representa uma instalação já confirmada
+    // (ver CadastrarPlantioDialog / "Cadastrar Plantio Confirmado").
+    if (!query.exec("SELECT id, local, data_hora, area, tipo_grama FROM plantios ORDER BY data_hora ASC")) {
+        qWarning() << "[PlantioDAO] Falha ao listar plantios confirmados:" << query.lastError().text();
+        return resultado;
+    }
+
+    while (query.next()) {
+        PlantioAgendado p;
+        p.id = query.value(0).toInt();
+        p.local = query.value(1).toString();
+        p.dataHora = query.value(2).toString();
+        p.area = query.value(3).toDouble();
+        p.tipoGrama = query.value(4).toString();
+        resultado.append(p);
+    }
+
+    return resultado;
+}
+
 PlantioDAO::PlantioDAO(const PlantioDAO&) {}
 PlantioDAO& PlantioDAO::operator=(const PlantioDAO&) { return *this; }

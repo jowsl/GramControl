@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include "../CadastrarPlantioDialog.hpp"
+#include "../CalendarioPlantiosDialog.hpp"
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
@@ -52,6 +53,11 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(cadastrarPlantioButton);
     connect(cadastrarPlantioButton, &QPushButton::clicked, this, &AdminWindow::handleCadastrarPlantio);
 
+    // Disponibilizar calendário de plantios confirmados
+    calendarioPlantiosButton = new QPushButton("Ver Calendario de Plantios Confirmados", this);
+    mainLayout->addWidget(calendarioPlantiosButton);
+    connect(calendarioPlantiosButton, &QPushButton::clicked, this, &AdminWindow::handleCalendarioPlantios);
+
     connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
     connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
@@ -95,5 +101,11 @@ void AdminWindow::handleGerarOrcamento() {
 // Implementação do novo Slot de agendamento de plantio
 void AdminWindow::handleCadastrarPlantio() {
     CadastrarPlantioDialog dialog(this);
+    dialog.exec();
+}
+
+// Implementação do calendário de plantios confirmados
+void AdminWindow::handleCalendarioPlantios() {
+    CalendarioPlantiosDialog dialog(this);
     dialog.exec();
 }
