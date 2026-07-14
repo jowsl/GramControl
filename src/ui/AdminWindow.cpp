@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QMessageBox>
 #include "../CadastrarPlantioDialog.hpp"
+#include "../CalendarioPlantiosDialog.hpp"
+#include "OrcamentoController.hpp"
+#include <QInputDialog>
 
 AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), system(ctrl) {
     setWindowTitle("GramAdmin - Perfis");
@@ -52,6 +55,16 @@ AdminWindow::AdminWindow(GramControl* ctrl, QWidget* parent) : QWidget(parent), 
     mainLayout->addWidget(cadastrarPlantioButton);
     connect(cadastrarPlantioButton, &QPushButton::clicked, this, &AdminWindow::handleCadastrarPlantio);
 
+    // Disponibilizar calendário de plantios confirmados
+    calendarioPlantiosButton = new QPushButton("Ver Calendario de Plantios Confirmados", this);
+    mainLayout->addWidget(calendarioPlantiosButton);
+    connect(calendarioPlantiosButton, &QPushButton::clicked, this, &AdminWindow::handleCalendarioPlantios);
+
+    // NOVO BOTAO AQUI:
+    visualizarOrcamentoButton = new QPushButton("Visualizar Orcamento por ID", this);
+    mainLayout->addWidget(visualizarOrcamentoButton);
+    connect(visualizarOrcamentoButton, &QPushButton::clicked, this, &AdminWindow::handleVisualizarOrcamento);
+
     connect(registerButton, &QPushButton::clicked, this, &AdminWindow::handleRegister);
     connect(logoutButton, &QPushButton::clicked, this, &AdminWindow::handleLogout);
 }
@@ -96,4 +109,25 @@ void AdminWindow::handleGerarOrcamento() {
 void AdminWindow::handleCadastrarPlantio() {
     CadastrarPlantioDialog dialog(this);
     dialog.exec();
+}
+
+// Implementação do calendário de plantios confirmados
+void AdminWindow::handleCalendarioPlantios() {
+    CalendarioPlantiosDialog dialog(this);
+    dialog.exec();
+}
+
+void AdminWindow::handleVisualizarOrcamento() {
+    bool ok;
+    // Abre uma caixa de diálogo pedindo um número inteiro (ID)
+    int idBusca = QInputDialog::getInt(this, "Visualizar Orcamento", 
+                                       "Digite o ID do Orcamento:", 
+                                       1, 1, 1000000, 1, &ok);
+    
+    // Se o usuário clicou em OK e digitou um número
+    if (ok) {
+        OrcamentoController controller;
+        std::string detalhes = controller.buscarDetalhamento(idBusca);
+        QMessageBox::information(this, "Detalhes do Orcamento", QString::fromStdString(detalhes));
+    }
 }

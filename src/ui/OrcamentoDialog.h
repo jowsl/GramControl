@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 #include "OrcamentoController.hpp"
 
 /**
@@ -23,13 +24,16 @@ public:
 
 private slots:
     void calcularOrcamento();
+    void gerarOrcamentoDigital();
 
 private:
     void carregarTiposDeGrama();
 
+    QLineEdit*      inputEmail;
     QDoubleSpinBox* inputMetragem;
     QComboBox*      comboTipoGrama;
     QPushButton*    btnCalcular;
+    QPushButton*    btnGerarDigital;
     QPushButton*    btnFechar;
     QLabel*         labelResultado;
     QLabel*         labelPrecoUnitario;

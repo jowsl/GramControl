@@ -16,3 +16,9 @@ bool PlantioController::requisitarCadastroPlantio(QString local, QString dataHor
     dao.inicializarBanco();
     return dao.inserirNoBanco(plantioModel);
 }
+
+QList<PlantioAgendado> PlantioController::listarPlantiosConfirmados() {
+    PlantioDAO dao;
+    dao.inicializarBanco();
+    return dao.listarPlantiosConfirmados();
+}
