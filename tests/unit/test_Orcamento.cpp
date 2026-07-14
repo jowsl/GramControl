@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include "../../src/Orcamento.hpp"
+#include "../../src/OrcamentoController.hpp"
 
 // Requisito 5.7 - Criterio de Aceitacao:
 // "Ao informar uma metragem valida e selecionar uma variedade de grama, o sistema
@@ -71,6 +72,152 @@ void teste_orcamento_visualizar_detalhamento() {
     
     std::string erroBusca = Orcamento::visualizarDetalhamento(-999);
     assert(erroBusca == "Orcamento nao encontrado.");
-    
+
     std::cout << "Teste formatacao e busca no BD: OK" << std::endl;
+}
+
+//sprint2 - aprovar ou recusar orcamento digitalmente
+
+void teste_orcamento_carregarPorId_encontrado() {
+    Orcamento orcOriginal("Grama Esmeralda", 30.0, 8.00);
+    orcOriginal.gerarOrcamentoDigital("carregar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orcCarregado;
+    assert(orcCarregado.carregarPorId(id) == true);
+    assert(orcCarregado.getEmailCliente() == "carregar@sprint2.com");
+    assert(orcCarregado.getTipoGrama() == "Grama Esmeralda");
+    assert(std::fabs(orcCarregado.getMetragem() - 30.0) < 1e-6);
+    assert(orcCarregado.getStatus() == "Aguardando Aprovação");
+
+    std::cout << "Teste carregarPorId encontrado: OK" << std::endl;
+}
+
+void teste_orcamento_carregarPorId_inexistente() {
+    Orcamento orc;
+    assert(orc.carregarPorId(-999) == false);
+
+    std::cout << "Teste carregarPorId inexistente: OK" << std::endl;
+}
+
+void teste_orcamento_aprovar_sucesso() {
+    Orcamento orcOriginal("Grama Batatais", 20.0, 8.50);
+    orcOriginal.gerarOrcamentoDigital("aprovar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orc;
+    orc.carregarPorId(id);
+    assert(orc.aprovar("aprovar@sprint2.com") == true);
+    assert(orc.getStatus() == "Aprovado");
+
+    // Confirma que a transicao foi persistida no banco, nao so em memoria
+    Orcamento reconsulta;
+    reconsulta.carregarPorId(id);
+    assert(reconsulta.getStatus() == "Aprovado");
+
+    std::cout << "Teste aprovar com sucesso: OK" << std::endl;
+}
+
+void teste_orcamento_aprovar_ja_decidido() {
+    Orcamento orcOriginal("Grama Esmeralda", 15.0, 8.00);
+    orcOriginal.gerarOrcamentoDigital("jadecidido@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orc1;
+    orc1.carregarPorId(id);
+    assert(orc1.aprovar("jadecidido@sprint2.com") == true);
+
+    Orcamento orc2;
+    orc2.carregarPorId(id);
+    assert(orc2.aprovar("jadecidido@sprint2.com") == false);
+
+    std::cout << "Teste aprovar orcamento ja decidido: OK" << std::endl;
+}
+
+void teste_orcamento_aprovar_id_inexistente() {
+    Orcamento orc; // nunca carregado (id = -1)
+    assert(orc.aprovar("qualquer@sprint2.com") == false);
+
+    std::cout << "Teste aprovar sem carregar antes: OK" << std::endl;
+}
+
+void teste_orcamento_recusar_sucesso() {
+    Orcamento orcOriginal("Grama Batatais", 25.0, 8.50);
+    orcOriginal.gerarOrcamentoDigital("recusar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orc;
+    orc.carregarPorId(id);
+    assert(orc.recusar("recusar@sprint2.com") == true);
+    assert(orc.getStatus() == "Recusado");
+
+    std::cout << "Teste recusar com sucesso: OK" << std::endl;
+}
+
+void teste_orcamento_recusar_ja_decidido() {
+    Orcamento orcOriginal("Grama Esmeralda", 12.0, 8.00);
+    orcOriginal.gerarOrcamentoDigital("recusajadecidido@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orc1;
+    orc1.carregarPorId(id);
+    assert(orc1.recusar("recusajadecidido@sprint2.com") == true);
+
+    Orcamento orc2;
+    orc2.carregarPorId(id);
+    assert(orc2.recusar("recusajadecidido@sprint2.com") == false);
+
+    std::cout << "Teste recusar orcamento ja decidido: OK" << std::endl;
+}
+
+void teste_orcamento_decisao_email_nao_confere() {
+    Orcamento orcOriginal("Grama Batatais", 18.0, 8.50);
+    orcOriginal.gerarOrcamentoDigital("dono@sprint2.com");
+    int id = orcOriginal.getId();
+
+    Orcamento orc;
+    orc.carregarPorId(id);
+    assert(orc.aprovar("outro_cliente@sprint2.com") == false);
+    assert(orc.recusar("outro_cliente@sprint2.com") == false);
+    assert(orc.getStatus() == "Aguardando Aprovação");
+
+    std::cout << "Teste decisao com e-mail divergente: OK" << std::endl;
+}
+
+void teste_controller_carregarOrcamento() {
+    Orcamento orcOriginal("Grama Esmeralda", 40.0, 8.00);
+    orcOriginal.gerarOrcamentoDigital("controller_carregar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    OrcamentoController controller;
+    Orcamento orcOut;
+    assert(controller.carregarOrcamento(id, orcOut) == true);
+    assert(orcOut.getEmailCliente() == "controller_carregar@sprint2.com");
+    assert(controller.carregarOrcamento(-999, orcOut) == false);
+
+    std::cout << "Teste controller carregarOrcamento: OK" << std::endl;
+}
+
+void teste_controller_aprovarOrcamento_sucesso() {
+    Orcamento orcOriginal("Grama Batatais", 22.0, 8.50);
+    orcOriginal.gerarOrcamentoDigital("controller_aprovar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    OrcamentoController controller;
+    assert(controller.aprovarOrcamento(id, "controller_aprovar@sprint2.com") == true);
+    assert(controller.aprovarOrcamento(id, "controller_aprovar@sprint2.com") == false);
+
+    std::cout << "Teste controller aprovarOrcamento: OK" << std::endl;
+}
+
+void teste_controller_recusarOrcamento_sucesso() {
+    Orcamento orcOriginal("Grama Esmeralda", 8.0, 8.00);
+    orcOriginal.gerarOrcamentoDigital("controller_recusar@sprint2.com");
+    int id = orcOriginal.getId();
+
+    OrcamentoController controller;
+    assert(controller.recusarOrcamento(id, "controller_recusar@sprint2.com") == true);
+    assert(controller.recusarOrcamento(id, "controller_recusar@sprint2.com") == false);
+
+    std::cout << "Teste controller recusarOrcamento: OK" << std::endl;
 }

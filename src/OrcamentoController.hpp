@@ -56,6 +56,35 @@ public:
      *         de erro caso o ID não seja encontrado.
      */
     std::string buscarDetalhamento(int idOrcamento);
+
+    // [SPRINT 2] Aprovar ou Recusar orçamento digitalmente
+
+    /**
+     * @brief Carrega um orçamento persistido pelo ID, para exibição na tela
+     *        de aprovação do Cliente.
+     * @param idOrcamento  ID do orçamento a ser carregado.
+     * @param orcamentoOut Orçamento preenchido em caso de sucesso.
+     * @return true se o orçamento foi encontrado.
+     */
+    bool carregarOrcamento(int idOrcamento, Orcamento& orcamentoOut);
+
+    /**
+     * @brief Aprova um orçamento em nome do cliente autenticado.
+     * @param idOrcamento  ID do orçamento a ser aprovado.
+     * @param emailLogado  E-mail do cliente autenticado (dono do orçamento).
+     * @return true se o orçamento existia, pertencia ao e-mail informado e
+     *         estava "Aguardando Aprovação".
+     */
+    bool aprovarOrcamento(int idOrcamento, const std::string& emailLogado);
+
+    /**
+     * @brief Recusa um orçamento em nome do cliente autenticado.
+     * @param idOrcamento  ID do orçamento a ser recusado.
+     * @param emailLogado  E-mail do cliente autenticado (dono do orçamento).
+     * @return true se o orçamento existia, pertencia ao e-mail informado e
+     *         estava "Aguardando Aprovação".
+     */
+    bool recusarOrcamento(int idOrcamento, const std::string& emailLogado);
 };
 
 #endif

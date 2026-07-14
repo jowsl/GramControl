@@ -64,6 +64,30 @@ public:
      */
     static std::string visualizarDetalhamento(int idBusca);
 
+    // [SPRINT 2] Funcionalidade 3: Aprovar ou Recusar orçamento digitalmente
+    /**
+     * @brief Carrega os dados de um orçamento já persistido a partir do seu ID.
+     * @param idBusca ID do orçamento a ser carregado.
+     * @return true se o orçamento foi encontrado e os campos foram preenchidos.
+     */
+    bool carregarPorId(int idBusca);
+
+    /**
+     * @brief Aprova o orçamento, desde que esteja "Aguardando Aprovação" e
+     *        pertença ao cliente informado.
+     * @param emailLogado E-mail do cliente autenticado que está decidindo.
+     * @return true se a transição de status foi persistida com sucesso.
+     */
+    bool aprovar(const std::string& emailLogado);
+
+    /**
+     * @brief Recusa o orçamento, desde que esteja "Aguardando Aprovação" e
+     *        pertença ao cliente informado.
+     * @param emailLogado E-mail do cliente autenticado que está decidindo.
+     * @return true se a transição de status foi persistida com sucesso.
+     */
+    bool recusar(const std::string& emailLogado);
+
 private:
 
     /// @brief Cópia não permitida.
@@ -71,9 +95,12 @@ private:
     /// @brief Atribuição não permitida.
     OrcamentoBody& operator=(const OrcamentoBody&);
 
-    std::string tipoGrama;      
-    double      metragem;       
-    double      precoUnitario;  
+    /// @brief Aplica a transição de status no banco, validando dono e status atual.
+    bool transicionarStatus(const std::string& emailLogado, const std::string& novoStatus);
+
+    std::string tipoGrama;
+    double      metragem;
+    double      precoUnitario;
 
     // Novos atributos de persistência
     int id;
@@ -104,6 +131,11 @@ public:
 
     bool gerarOrcamentoDigital(const std::string& email);
     static std::string visualizarDetalhamento(int idBusca);
+
+    // [SPRINT 2] Funcionalidade 3: Aprovar ou Recusar orçamento digitalmente
+    bool carregarPorId(int idBusca);
+    bool aprovar(const std::string& emailLogado);
+    bool recusar(const std::string& emailLogado);
 };
 
 #endif
